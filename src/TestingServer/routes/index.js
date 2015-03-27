@@ -4,7 +4,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
-
+var Threads = require('../BuzzModules/Threads/Threads.js');
 var done = false;
 /* GET home page. */
 router.get('/', function(req, res, next) {
