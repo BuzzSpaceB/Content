@@ -8,6 +8,10 @@ var Threads = require('../BuzzModules/Threads/Threads');
 var thread;
 var done = false;
 
+var Reporting = require('../BuzzModules/Reporting/ReportingB');
+
+
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -159,5 +163,7 @@ function uploadResourcesPage(cont) {
 
     return page;
 }
+
+
 
 module.exports = router;
