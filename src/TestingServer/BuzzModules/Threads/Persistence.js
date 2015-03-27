@@ -12,12 +12,13 @@
  */
 function doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
     //Connecting to the database...
-    mongoose.connect('mongodb://localhost/test');
+    console.log("here");
+    // mongoose.connect('mongodb://localhost/test');
 
     var database = mongoose.connection;
     database.on('error', console.error.bind(console, 'connection error:'));
     database.once('open', function (callback) {
-
+// 
         //Database connected successfully: Continue
         PostSchema = new Schema({
             //_ID, _PostType, _Heading, _Content, _DateTime, _MimeType
