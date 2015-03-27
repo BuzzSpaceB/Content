@@ -6,7 +6,7 @@ var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads');
 var StatusCreateAppraisal = require('../BuzzModules/Status/createAppraisalType');
-var Reporting = require('../BuzzModules/Reporting/Reporting');
+//var Reporting = require('../BuzzModules/Reporting/Reporting');
 var thread;
 var done = false;
 
@@ -90,7 +90,7 @@ router.post('/uploadResource', function(req, res, next) {
 
   if(done == true)
   {
-
+	  
     console.log(req.files.resource);
     ResourceController.uploadResource(req.files.resource, req.body.description);
     res.location("./viewResources");
@@ -179,6 +179,15 @@ function uploadResourcesPage(cont) {
 
     return page;
 }
+
+router.post('/createReport', function(req, res, next)
+{
+//call funcs
+    console.log(req);
+    //Reporting.(dbURL, collection);
+    res.location('./viewReport');
+    res.redirect('./viewReport');
+});
 
 router.get('/viewReport', function(req, res, next) {
 //show changes
