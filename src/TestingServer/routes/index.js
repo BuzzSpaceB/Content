@@ -8,7 +8,7 @@ var ResourceController = require('../BuzzModules/Resources/controllers/Resources
 var done = false;
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Upload Resource' });
+  res.sendFile(__dirname + "/upload.html");
 });
 
 router.get('/viewResources', function(req, res, next) {
