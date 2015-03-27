@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/buzzResources', function(err) {
+mongoose.createConnection('mongodb://localhost:27017/buzzResources', function(err) {
     if(err) {
         console.log('connection error', err);
     } else {
@@ -15,6 +15,14 @@ mongoose.connect('mongodb://localhost:27017/buzzResources', function(err) {
     }
 });
 
+
+mongoose.createConnection('mongodb://localhost:27017/test', function(err) {
+    if(err) {
+        console.log('connection error', err);
+    } else {
+        console.log('Mongoose connection successful');
+    }
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

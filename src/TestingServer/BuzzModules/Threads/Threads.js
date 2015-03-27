@@ -86,7 +86,7 @@ function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _Da
 	this.mPost = new Post(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType);
 	this.mChildren = [];
 	this.mStatus = Status.Open;
-        this.mLevel = _Level;
+    this.mLevel = _Level;
 
 	var mongoose = require('mongoose');
 	var Schema = mongoose.Schema;
@@ -132,16 +132,17 @@ Thread.prototype =
 		return this.mParent;
 	},
         
-        getRoot: function ()
+    getRoot: function ()
+    {
+        if (this.mParent !== 0) {
+	        this.mParent.getRoot();
+            // return this.getRoot();
+        }
+        else
         {
-            if (this.mParent !== null) {
-		this.mParent.getRoot();
-            }
-            else
-            {
-                return this;
-            }
-        },
+            return this;
+        }
+    },
         
 	unfreeze: function ()
 	{
@@ -197,16 +198,16 @@ Thread.prototype =
             this.mStatus = Status.Closed;	
 	},
 
-        setLevels: function()
-        {
-            //traverses this thread's children
-            if (this.mChildren.length >= 1) {
-                for (var i = 0; i < this.mChildren.length; i++) {
-                    this.mChildren[i].setLevels();
-                }
+    setLevels: function()
+    {
+        //traverses this thread's children
+        if (this.mChildren.length >= 1) {
+            for (var i = 0; i < this.mChildren.length; i++) {
+                this.mChildren[i].setLevels();
             }
-            this.mLevel = this.getParentThread().mLevel + 1; //sets this thread's level to one more than its parents level
-        },
+        }
+        this.mLevel = this.getParentThread().mLevel + 1; //sets this thread's level to one more than its parents level
+    },
 
         /**
         * @param newParent - Describes which thread will be the current thread's new parent (i.e. the thread the current thread will attach to). If it is null the thread will not move.
@@ -274,34 +275,6 @@ Thread.prototype =
             }
 	},
 
-    /**
-    * @param startDateTime -  Restrict returned posts to be after this time stamp. Default is the time stamp of the root post in the Buzz space.
-    * @param endDateTime -  Restrict returned posts to be before this time stamp. If unspecified all posts are returned.
-    * @param maxLevel - Restrict returned posts to be at most at the specified depth relative to the post. If this value is 0, minLevel will also be 0 only the specified post is returned.
-    * @param minLevel - Restrict returned posts to be at least at the specified depth relative to the post. Obviously it has to be less or equal to maxLevel. If both minLevel and maxLevel is 1, only the immediate children are retirieved.
-    * @param userGroup - Restricts returned posts to be limited to a specific user group.
-    * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
-    **/
-	queryThread: function (startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
-	{
-		//Herman
-                
-            //Variable to keep track of the current thread being checked as it traverses the tree
-            var temp = this;
-             //Variable to keep track of the depth of the temp thread in relation to the starting thread
-            var count = -1;
-            //Array of queryInfo objects to be returned as the search results for this query
-            var answer = [];
-            
-            //Check to see if default values for maxLevel and minLevel must be set and if they should then set them
-            if (maxLevel === 0 || maxLevel === null)
-                minLevel = 0;
-            if (minLevel > maxLevel || minLevel === null)
-                minLevel = maxLevel;
-            
-            //Call the recursive extension of this function to traverse the children of this thread
-            return queryThreadRecursive(answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet);
-	},
 
         /**
          * @param answer - The array in which the answer will be stored in.
@@ -328,7 +301,7 @@ Thread.prototype =
                 //If no startDateTime value is supplied the default value is set to the root thread's DateTime
                 if (startDateTime === null || startDateTime === 0)
                     //Make use of the getRoot function as provided by the Spaces team (as it is a variable of the BuzzSpace)
-                    startDateTime = getRoot().mDateTime;
+                    startDateTime = this.getRoot().mDateTime;
                 
                 //If either endDateTime, userGroup or phraseSet is not supplied then set its relevant flag to true (this will mean that instead of checking against these values all releveant posts will be returned)
                 if (endDateTime === null || endDateTime === 0)
@@ -393,6 +366,35 @@ Thread.prototype =
                 return answer;
             }
 	},
+
+    /**
+    * @param startDateTime -  Restrict returned posts to be after this time stamp. Default is the time stamp of the root post in the Buzz space.
+    * @param endDateTime -  Restrict returned posts to be before this time stamp. If unspecified all posts are returned.
+    * @param maxLevel - Restrict returned posts to be at most at the specified depth relative to the post. If this value is 0, minLevel will also be 0 only the specified post is returned.
+    * @param minLevel - Restrict returned posts to be at least at the specified depth relative to the post. Obviously it has to be less or equal to maxLevel. If both minLevel and maxLevel is 1, only the immediate children are retirieved.
+    * @param userGroup - Restricts returned posts to be limited to a specific user group.
+    * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
+    **/
+    queryThread: function (startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
+    {
+        //Herman
+             console.log("here")   ;
+            //Variable to keep track of the current thread being checked as it traverses the tree
+            var temp = this;
+             //Variable to keep track of the depth of the temp thread in relation to the starting thread
+            var count = -1;
+            //Array of queryInfo objects to be returned as the search results for this query
+            var answer = [];
+            
+            //Check to see if default values for maxLevel and minLevel must be set and if they should then set them
+            if (maxLevel === 0 || maxLevel === null)
+                minLevel = 0;
+            if (minLevel > maxLevel || minLevel === null)
+                minLevel = maxLevel;
+            
+            //Call the recursive extension of this function to traverse the children of this thread
+            return this.queryThreadRecursive(answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet);
+    },
 
         /**
          * @param answer - The array in which the answer will be stored in.

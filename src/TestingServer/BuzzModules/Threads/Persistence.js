@@ -12,8 +12,7 @@
  */
 function doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
     //Connecting to the database...
-    console.log("here");
-    // mongoose.connect('mongodb://localhost/test');
+    mongoose.connect('mongodb://localhost:27017/test');
 
     var database = mongoose.connection;
     database.on('error', console.error.bind(console, 'connection error:'));
