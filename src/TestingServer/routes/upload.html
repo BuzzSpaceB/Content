@@ -17,22 +17,21 @@
 	<body>
 		<div>
 			<h2>Resources module</h2>
-			<form id="FileUploader" enctype="multipart/form-data" action="/api/photo" method="post">
-				<input type="file" name="userFile">
+			<form id="uploadForm" name="upload" method="post" enctype="multipart/form-data" action="/uploadResource">
+				<input id="resource" type="file" name="resource">
 				<br>
-				<input type="submit" value="Upload" name="submitFile">
+				<input id="btnSubmit" type="submit" value="upload">
 			</form>
 		</div>
 		<br>
 		<div>
 			<h2>Reporting module</h2>
-            <form id="Reporting1" enctype="multipart/form-data" action="" onsubmit="reporting()" method="post">
+            <form id="Reporting1" enctype="multipart/form-data" action="" onsubmit="" method="post">
                 <label> Count entries in dataSet :</label><input type="submit" value="get" name="submitFile">
             </form>
             <form id="Reporting2" enctype="multipart/form-data" action="" method="post">
                 <label> Number of members who are creators of posts in data set :</label><input type="submit" value="get" name="submitFile">
             </form>
-
 		</div>
 		<br>
 		<div>
@@ -48,8 +47,8 @@
 		<br>
 		<div>
 			<h2>Status module</h2>
-			<form method="post" action="/">
-				<fieldset>
+			<form method="post" enctype="multipart/form-data" action="/createApprasial">
+				<!--fieldset>
 					<legend>Create Appraisal</legend>
 						<label>name</label>
 						<input type="text" id="appraisal" name="appraisal[name]" required autofocus/>
@@ -90,8 +89,8 @@
 					<input type="file" name="appraisal[Level3Image]" id="lvl3icon"/>
 				</fieldset>
 				<br/>
-				<br/>
-				<button id="submit2" name="submit2">Submit</button>	
+				<br/-->
+				<input id="apprasialSubmit" type="submit" value="Add funny appraisal">
 			</form>
 		</div>
 	</body>
