@@ -77,6 +77,7 @@ function isAdministrator ()
  * @param _MimeType - Describes what type of content the post consist of.
  * @constructor
  */
+
 function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType)
 {
 	this.mID = _ID;
@@ -556,6 +557,7 @@ ThreadSummary.prototype =
 	}
 };
 
+module.exports = Thread;
 
 /**
  Unit Testing of our Thread Module.
@@ -666,4 +668,3 @@ exports.CreationOfThreads = {
         test.done();
     }
 }
-

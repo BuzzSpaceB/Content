@@ -4,8 +4,10 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
-var Threads = require('../BuzzModules/Threads/Threads.js');
+var Threads = require('../BuzzModules/Threads/Threads');
 var done = false;
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(__dirname + "/upload.html");
@@ -100,6 +102,10 @@ router.post('/download', function(req, res, next) {
   res.location("./");
   res.redirect("./");
 
+});
+
+router.post('/createThread', function(req,res,next) {
+	console.log("lol");
 });
 
 function uploadResourcesPage(cont) {
