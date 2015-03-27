@@ -6,6 +6,8 @@ var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads.js');
 var done = false;
+var Reporting = require('../BuzzModules/Reporting/ReportingB');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.sendFile(__dirname + "/upload.html");
@@ -136,5 +138,7 @@ function uploadResourcesPage(cont) {
 
     return page;
 }
+
+
 
 module.exports = router;
