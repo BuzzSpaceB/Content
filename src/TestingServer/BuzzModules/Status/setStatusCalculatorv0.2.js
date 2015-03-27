@@ -27,31 +27,31 @@ function setStatusCalculator(setStatusCalculatorRequest)
 
         if(tda.isPrototypeOf(setStatusCalculatorRequest))
         {
-            var treeSize=setStatusCalculatorRequest.assessProfile(); //invoke the ThreadDepthAssessor on the profile
+            var treeSize=setStatusCalculatorRequest.assessProfile(setStatusCalculatorRequest); //invoke the ThreadDepthAssessor on the profile
             return treeSize;
         }
 
         else if(npa.isPrototypeOf(setStatusCalculatorRequest))
         {
-            var numPosts=setStatusCalculatorRequest.assessProfile(); //invoke the default NumPostsassessor on the profile
+            var numPosts=setStatusCalculatorRequest.assessProfile(setStatusCalculatorRequest); //invoke the default NumPostsassessor on the profile
             return numPosts;
         }
 
         else if(ra.isPrototypeOf(setStatusCalculatorRequest))
         {
-            var credit=setStatusCalculatorRequest.assessProfile(); ////invoke the RoleAssessor on the profile
+            var credit=setStatusCalculatorRequest.assessProfile(setStatusCalculatorRequest); ////invoke the RoleAssessor on the profile
             return credit;
         }
 
         else if(wsa.isPrototypeOf(setStatusCalculatorRequest))
         {
-            var weightedAverage=setStatusCalculatorRequest.assessProfile(); //invoke the WeightedSumAssessor on the profile
+            var weightedAverage=setStatusCalculatorRequest.assessProfile(setStatusCalculatorRequest); //invoke the WeightedSumAssessor on the profile
             return weightedAverage;
         }
 
         else if(aa.isPrototypeOf(setStatusCalculatorRequest))
         {
-            var rating = setStatusCalculatorRequest.assessProfile(); //invoke the AppraisalsAssessor on the profile
+            var rating = setStatusCalculatorRequest.assessProfile(setStatusCalculatorRequest); //invoke the AppraisalsAssessor on the profile
             return rating;
         }
 
