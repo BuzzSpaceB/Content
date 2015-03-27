@@ -5,13 +5,10 @@ var mongoose = require('mongoose');
 var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads');
+var StatusCreateAppraisal = require('../BuzzModules/Status/createAppraisalType');
+var Reporting = require('../BuzzModules/Reporting/Reporting');
 var thread;
 var done = false;
-
-var Reporting = require('../BuzzModules/Reporting/ReportingB');
-
-
-
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -65,6 +62,15 @@ router.get('/viewResources', function(req, res, next) {
     });
 });
 
+router.get('/viewStatus', function(req, res, next) {
+//show changes
+  var page = "";
+
+	page += "<p>" + StatusCreateAppraisal.createAppraisal("funny", "It was funny") + "<br/>" + StatusCreateAppraisal.createAppraisalLevels("smirk", "laughing", "crying") + "</p>";
+	res.send(page);
+	
+});
+
 router.use(multer(
   {
     dest: './uploads/',
@@ -92,13 +98,23 @@ router.post('/uploadResource', function(req, res, next) {
   }
 });
 
+router.post('/createApprasial', function(req, res, next)
+{
+//call funcs
+	console.log(req);
+	StatusCreateAppraisal.createAppraisal("funny", "It was funny");
+	StatusCreateAppraisal.createAppraisalLevels("smirk", "laughing", "crying");
+	//StatusCreateAppraisal.store(dbURL, collection);
+	res.location('./viewStatus');
+	res.redirect('./viewStatus');
+});
+
 router.post('/remove', function(req, res, next) {
 
     ResourceController.removeResource(req.body.del);
     res.location("./viewResources");
     res.redirect("./viewResources"); 
 });
-
 
 router.post('/download', function(req, res, next) {
 
@@ -164,6 +180,12 @@ function uploadResourcesPage(cont) {
     return page;
 }
 
+router.get('/viewReport', function(req, res, next) {
+//show changes
+    var page = "";
+    page += "<p>" + "" + "<br/>" + "</p>";
+    res.send(page);
 
+});
 
 module.exports = router;
