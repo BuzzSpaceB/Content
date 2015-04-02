@@ -12,14 +12,64 @@ var threads = require('Threads');
 //Reporting
 
 
-// Resources
-
-function uploadResources()
+function createReport()
 {
 
 }
 
+function viewReport()
+{
+
+}
+
+// Resources
+
+/**
+ * Upload a resource to the database
+ *
+ *
+ */
+function uploadResources(resource, description)
+{
+  resources.uploadResource(resource, description);
+}
+
+/**
+ * Remove a resource to the database
+ *
+ *
+ */
 function removeResources()
+{
+
+}
+
+/**
+ * Add a type of resource that D3 can accept
+ *
+ *
+ */
+function addResourceType()
+{
+
+}
+
+/**
+ * Remove a type of resource so that D3 will no longer accept this type of file
+ *
+ *
+ */
+function removeResourceType()
+{
+
+}
+
+/**
+ * Modify an existing resource type
+ *
+ *
+ */
+function modifyResourceType()
 {
 
 }
@@ -28,25 +78,20 @@ function removeResources()
 
 // Threads
 
-module.export.uploadResources = uploadResources;
-
-module.export.removeResources = function()
+function createThread()
 {
 
 }
 
-module.export.addResourceType = function()
-{
 
+// Function exports
 
-}
+module.exports.uploadResources = uploadResources;
 
-module.export.removeResourceType = function()
-{
+module.exports.removeResources = removeResources;
 
-}
+module.exports.addResourceType = addResourceType;
 
-module.export.modifyResourceType = function()
-{
+module.exports.removeResourceType = removeResourceType;
 
-}
+module.exports.modifyResourceType = modifyResourceType;
