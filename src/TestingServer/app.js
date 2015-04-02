@@ -4,9 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+//var configDB = require('./config');
 var mongoose = require('mongoose');
 
+mongoose.connection.on('open', function (ref) {
+    console.log('Connected to mongo server.');
+});
+
+mongoose.connection.on('error', function (err) {
+    console.log('Could not connect to mongo server!');
+    console.log(err);
+});
+
+mongoose.connect("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
+
+/*
 mongoose.createConnection('mongodb://localhost:27017/buzzResources', function(err) {
     if(err) {
         console.log('connection error', err);
@@ -23,7 +35,7 @@ mongoose.createConnection('mongodb://localhost:27017/test', function(err) {
         console.log('Mongoose connection successful');
     }
 });
-
+*/
 var routes = require('./routes/index');
 var users = require('./routes/users');
 

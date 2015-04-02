@@ -5,8 +5,10 @@ var mongoose = require('mongoose');
 var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads');
-var StatusCreateAppraisal = require('../BuzzModules/Status/createAppraisalType');
+var Status = require('../BuzzModules/Status/StatusFunctions.js');
+
 //var Reporting = require('../BuzzModules/Reporting/Reporting');
+
 var thread;
 var done = false;
 
@@ -62,15 +64,6 @@ router.get('/viewResources', function(req, res, next) {
     });
 });
 
-router.get('/viewStatus', function(req, res, next) {
-//show changes
-  var page = "";
-
-	page += "<p>" + StatusCreateAppraisal.createAppraisal("funny", "It was funny") + "<br/>" + StatusCreateAppraisal.createAppraisalLevels("smirk", "laughing", "crying") + "</p>";
-	res.send(page);
-	
-});
-
 router.use(multer(
   {
     dest: './uploads/',
@@ -90,23 +83,11 @@ router.post('/uploadResource', function(req, res, next) {
 
   if(done == true)
   {
-	  
     console.log(req.files.resource);
     ResourceController.uploadResource(req.files.resource, req.body.description);
     res.location("./viewResources");
     res.redirect("./viewResources");
   }
-});
-
-router.post('/createApprasial', function(req, res, next)
-{
-//call funcs
-	console.log(req);
-	StatusCreateAppraisal.createAppraisal("funny", "It was funny");
-	StatusCreateAppraisal.createAppraisalLevels("smirk", "laughing", "crying");
-	//StatusCreateAppraisal.store(dbURL, collection);
-	res.location('./viewStatus');
-	res.redirect('./viewStatus');
 });
 
 router.post('/remove', function(req, res, next) {
@@ -125,8 +106,55 @@ router.post('/download', function(req, res, next) {
 
 });
 
-router.post('/createThread', function(req,res,next) {
+
+/****** Appraisals *************/
+
+
+router.get('/saveCreatedApprasial', function(request, response, next)
+{
+	var appraisalJson = Status.createAppraisal(request.query.appraisalName, request.query.appraisalDesc);
+	Status.store(appraisalJson);
+	var content = '<form method="get" enctype="multipart/form-data" action="saveCreatedApprasialLevels">';
+	content += '<fieldset><legend>Appraisal Levels</legend>';
 	
+	var temp = request.query.appraisalLevelNum;
+	if(temp != 0)
+	{
+		for(var i = 0; i < temp; i++)
+		{
+			content += '<label>Level ' + (i+1) + ': </label><input type="text" name="appraisalLevel' + (i+1) + '" value="smile"/><br/><br/>';
+			content += '<label>Level ' + (i+1) + ' Icon: </label><input type="file" name="appraisalLevel' + (i+1) + 'Image"/><br/><br/>';
+		}
+	}
+	content += '</fieldset><br/><br/><input id="saveApprasial" type="submit" value="Save apprasial"></form>';
+	
+	response.send(content);
+});
+
+
+router.get('/saveCreatedApprasialLevels', function(request, response, next)
+{
+	//change depending on number of levels
+	var appraisalLevelJson = Status.createAppraisalLevels(request.query.appraisalLevel1, request.query.appraisalLevel2, request.query.appraisalLevel3);
+	//call upload func to save images.
+    response.location('/');
+    response.redirect('/');
+});
+
+router.post('/createApprasial', function(request, response, next)
+{
+	var content = '<form method="GET" enctype="multipart/form-data" action="saveCreatedApprasial"><fieldset><legend>Create Appraisal</legend>';
+	content += '<label>name</label><input type="text" id="appraisal" name="appraisalName" value="Funny" autofocus/><br/><br/><label>Description:</label>';
+	content += '<input type="text" id="description" name="appraisalDesc" value="It was funny"/><br/><br/><form  method="GET" enctype="multipart/form-data" action="uploadIcon"><label>Not Rated Icon: </label><input type="file" name="appraisal[notRated]" id="notRatedIcon"/></form>';
+	content += '<br/><br/><label>Number of levels:</label><input type="text" name="appraisalLevelNum" value="3"/></fieldset><br/><br/><input id="saveApprasial" type="submit" value="Add apprasial levels"></form>';
+	
+	response.send(content);
+});
+
+/*************************/
+
+router.post('/createThread', function(req,res,next) 
+{
 	res.location("./createThread");
     res.redirect("./createThread"); 	
 });
