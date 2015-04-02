@@ -26,22 +26,34 @@ function viewReport()
 
 /**
  * Upload a resource to the database
- *
- *
+ * @param {Object} resource - the file to be uploaded
+ * @param {String} description - a description of the file
  */
 function uploadResources(resource, description)
 {
   resources.uploadResource(resource, description);
+  console.log("Content: Resource uploaded.");
 }
 
 /**
  * Remove a resource to the database
+ * @param {String} resourceId - ID of the resource to remove
+ */
+function removeResources(resourceId)
+{
+  resources.removeResource(resourceId);
+  console.log("Content: Resource removed.")
+}
+
+/**
+ * Retrieve a resource from the database
  *
  *
  */
-function removeResources()
+function getResource(resourceName)
 {
-
+  resources.downloadResource(resourceName);
+  console.log("Content: Resource "  + resourceName + " retrieved");
 }
 
 /**
@@ -49,9 +61,10 @@ function removeResources()
  *
  *
  */
-function addResourceType()
+function addResourceType(resourceType, maxSize)
 {
-
+  resources.addResourceType(resourceType, maxSize);
+  console.log("Content: Resource type added.");
 }
 
 /**
@@ -59,9 +72,10 @@ function addResourceType()
  *
  *
  */
-function removeResourceType()
+function removeResourceType(resourceType)
 {
-
+  resources.removeResourceType(resourceType);
+  console.log("Content: Resource type removed.");
 }
 
 /**
@@ -76,22 +90,46 @@ function modifyResourceType()
 
 // Status
 
+function createApprasial(appraisalName, appraisalDescription)
+{
+  var response = status.Status.createAppraisal(appraisalName, appraisalDescription);
+
+  console.log("Content: Appresial created.");
+
+  return response;
+}
+
 // Threads
 
-function createThread()
+function createThread(title, content)
 {
-
+  var t = new Threads(0, "Frikkie", 0, 0, "Question", title, content, "Yesterday", "Text");
+  console.log("Content: Thread created.");
 }
 
 
 // Function exports
 
+// Reporting
+
+// Resources
+
 module.exports.uploadResources = uploadResources;
 
 module.exports.removeResources = removeResources;
+
+module.exports.getResource = getResource;
 
 module.exports.addResourceType = addResourceType;
 
 module.exports.removeResourceType = removeResourceType;
 
 module.exports.modifyResourceType = modifyResourceType;
+
+// Status
+
+module.exports.createApprasial = createApprasial;
+
+// Threads
+
+module.exports.createThread = createThread;
