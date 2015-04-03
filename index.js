@@ -90,9 +90,23 @@ function modifyResourceType()
 
 // Status
 
+/**
+ * Store an appraisal
+ * @param {String} appraisal - a JSON string with information of the appraisal
+ */
+function storeApprasial(appraisal)
+{
+  status.store(appraisal);
+}
+
+/**
+ * Create an apprasial.
+ * @param {String} appraisalName - the name of the appraisal
+ * @param {String} appraisalDescription - the description of the appraisal
+ */
 function createApprasial(appraisalName, appraisalDescription)
 {
-  var response = status.Status.createAppraisal(appraisalName, appraisalDescription);
+  var response = status.createAppraisal(appraisalName, appraisalDescription);
 
   console.log("Content: Appresial created.");
 
@@ -101,6 +115,11 @@ function createApprasial(appraisalName, appraisalDescription)
 
 // Threads
 
+/**
+ * Create a new thread
+ * @param {String} title -
+ * @param {String} content -
+ */
 function createThread(title, content)
 {
   var t = new Threads(0, "Frikkie", 0, 0, "Question", title, content, "Yesterday", "Text");
@@ -128,6 +147,7 @@ module.exports.modifyResourceType = modifyResourceType;
 
 // Status
 
+module.exports.storeApprasial = storeApprasial;
 module.exports.createApprasial = createApprasial;
 
 // Threads
