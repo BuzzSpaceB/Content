@@ -6,7 +6,7 @@ var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads');
 var Status = require('../BuzzModules/Status/StatusFunctions.js');
-var Reporting = require('../BuzzModules/Reporting/ReportingB');
+var Reporting = require('../BuzzModules/Reporting/Reporting.js');
 
 var thread;
 var done = false;
@@ -206,11 +206,10 @@ function uploadResourcesPage(cont) {
 
     return page;
 }
-//*****REPORTING
+//**********************Reporting********************-->
 router.post('/createReport', function(req, res, next)
 {
 //call functions
-    Reporting.
     //Reporting.(dbURL, collection);
     res.location('./viewReport');
     res.redirect('./viewReport');
