@@ -6,7 +6,7 @@ var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/Threads');
 var Status = require('../BuzzModules/Status/StatusFunctions.js');
-var Reporting = require('../BuzzModules/Reporting/ReportingB');
+// var Reporting = require('../BuzzModules/Reporting/ReportingB');
 
 var thread;
 var done = false;
@@ -154,21 +154,21 @@ router.post('/createApprasial', function(request, response, next)
 
 router.post('/createThread', function(req,res,next) 
 {
-	res.location("./createThread");
-    res.redirect("./createThread"); 	
+	res.location("/createThread");
+    res.redirect("/createThread"); 	
 });
 
 router.get('/createThread', function(req,res,next){
 	// var page = req;
 	console.log(req.query.threadTitle);
 	console.log(req.query.threadContent);
-	var t = new Threads(0, "Frikkie", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, "Yesterday", "Text");
+	// var t = new Threads(0, "Frikkie", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, "Yesterday", "Text");
 	res.send(generateThreadCreatedPage(t));
 });
 
 function generateThreadCreatedPage(t){
 	// var t = new Threads(0, "Frikkie", 0, 0, "Question", "req.query.threadTitle", "req.query.threadContent", "Yesterday", "Text");
-	console.log(t.queryThread(0,0,0,0,0,0));
+	// console.log(t.queryThread(0,0,0,0,0,0));
 	return "Thread succesfully created";
 }
 
