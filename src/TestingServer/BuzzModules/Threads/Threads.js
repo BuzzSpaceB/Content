@@ -6,7 +6,8 @@ Status =
 {
 	Open: "Open",
 	Closed: "Closed",
-	Hidden: "Hidden"
+	Hidden: "Hidden",
+	Read: "Read"
 };
 
 /**
@@ -60,11 +61,6 @@ Post.prototype =
 	constructor: Post
 };
 
-function isAdministrator ()
-{
-    return true;
-}
-
 /**
  * The Constructor for a Thread object. It initializes a thread and a post within that thread. There exist a one-to-one relationship between a thread and a post.
  * @param _User - Identifies who created/initiated the thread.
@@ -77,7 +73,6 @@ function isAdministrator ()
  * @param _MimeType - Describes what type of content the post consist of.
  * @constructor
  */
-
 function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType)
 {
 	this.mID = _ID;
@@ -86,7 +81,7 @@ function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _Da
 	this.mPost = new Post(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType);
 	this.mChildren = [];
 	this.mStatus = Status.Open;
-    this.mLevel = _Level;
+        this.mLevel = _Level;
 
 	var mongoose = require('mongoose');
 	var Schema = mongoose.Schema;
@@ -133,47 +128,38 @@ Thread.prototype =
 	},
         
     getRoot: function ()
-    {
-        if (this.mParent !== 0) {
-	        this.mParent.getRoot();
-            // return this.getRoot();
-        }
+{
+    if (this.mParent !== null) {
+        if (this.mParent !== 0)
+            (this.mParent).getRoot();
         else
-        {
             return this;
-        }
-    },
+    }
+    else
+    {
+        return this;
+    }
+},
         
 	unfreeze: function ()
 	{
+        this.mStatus = Status.Open;
 		if (this.mChildren.length >= 1) {
 			for (var i = 0; i < this.mChildren.length; i++) {
 			    this.mChildren[i].unfreeze();
 			}
 		}
-	var thread = new Thread(this.mID, this.mUser, this.mParent, this.mLevel, this.mPostType, this.mHeading, this.mContent, this.mDateTime, this.mMimeType);
-        this.mThread = thread;
-        this.mStatus = Status.Open;
 	},
 
 	closeThread: function ()
 	{
 		//Martha
-	        if(isAdministrator() === true)
-	        {
-                console.log('closing thread');
-                this.mStatus = Status.Closed;
-		        this.closeChildren();
-	            //creates thread summary
-	            if(Object.isFrozen(this) === true)
-	            {
-	                this.createThreadSummary();
-	            }
-	        }
-	        else
-	        {
-	            alert('You are not authorized to close this thread');
-	        }
+            this.mStatus = Status.Closed;
+            this.closeChildren();
+            if(this.mStatus === Status.Closed)
+            {
+                this.createThreadSummary();
+            }
 	},
 	
 	createThreadSummary: function()
@@ -191,11 +177,9 @@ Thread.prototype =
 	    //checks if this thread has childThreads and prevent them from modification and adding other properties
             if (this.mChildren.length >= 1) {
                 for (var i = 0; i < this.mChildren.length; i++) {
-                    Object.freeze(this.mChildren[i]); //prevents modification
+                    this.mChildren[i].mStatus = Status.Closed;
                 }
             }
-            Object.freeze(this); //prevents modification of the current thread
-            this.mStatus = Status.Closed;	
 	},
 
     setLevels: function()
@@ -209,161 +193,59 @@ Thread.prototype =
         this.mLevel = this.getParentThread().mLevel + 1; //sets this thread's level to one more than its parents level
     },
 
-        /**
-        * @param newParent - Describes which thread will be the current thread's new parent (i.e. the thread the current thread will attach to). If it is null the thread will not move.
-        **/
+    /**
+    * @param newParent - Describes which thread will be the current thread's new parent (i.e. the thread the current thread will attach to). If it is null the thread will not move.
+    **/
 	moveThread: function (newParent)
 	{
 		//Herman
-            //Make use of the isAdministrator function as provided by the Authorization team
-            if(isAdministrator() === true)
+            if(newParent !== null)
             {
-                if(newParent !== null)
+                //Remove this thread from its current parent's children array
+                var index = this.mParent.mChildren.indexOf(this);
+                if(index !== -1) {
+                        this.mParent.mChildren.splice(index, 1);
+                }
+
+                //Add this thread to its new parent's children array
+                newParent.mChildren.push(this);
+
+                //Assign newParent as this thread's parent
+                this.mParent = newParent;
+
+                //Assign newParent's status to this thread (e.g. current thread is open, if it is moved to be the child of a thread which is closed then the current thread will also become closed
+                this.mStatus = newParent.mStatus;
+
+                //Assign newParent's status to this thread's children and their children, etc.
+                if(newParent.mStatus !== this.mStatus)
                 {
-                    //Remove this thread from its current parent's children array
-                    var index = this.mParent.mChildren.indexOf(this);
-                    if(index !== -1) {
-                            this.mParent.mChildren.splice(index, 1);
-                    }
-                    
-                    //Add this thread to its new parent's children array
-                    newParent.mChildren.push(this);
-                    
-                    //Assign newParent as this thread's parent
-                    this.mParent = newParent;
-                    
-                    //Assign newParent's status to this thread (e.g. current thread is open, if it is moved to be the child of a thread which is closed then the current thread will also become closed
-                    this.mStatus = newParent.mStatus;
-                    
-                    //Assign newParent's status to this thread's children and their children, etc.
-                    if(newParent.mStatus !== this.mStatus)
+                    if(newParent.mStatus === Status.Open)
                     {
-                    	if(newParent.mStatus === Status.Open)
-                    	{
-                    		if(this.mStatus === Status.Closed)
-                    			this.reopenThread();
-                    		else if (this.mStatus === Status.Hidden)
-                    			this.unhideThread();
-                    	}
-                    	else if (newParent.mStatus === Status.Closed)
-                    	{
-                    		this.closeThread();
-                    	}
-                    	else if (newParent.mStatus === Status.Hidden)
-                    	{
-                    		if (this.mStatus === Status.Closed)
-                    			this.reopenThread();
-                    		this.hideThread();
-                    	}
+                        if(this.mStatus === Status.Closed)
+                            this.reopenThread();
+                        else if (this.mStatus === Status.Hidden)
+                            this.unhideThread();
                     }
-                    this.setLevels();
-                    
-                    //The thread was successfully moved
-                    return true;
+                    else if (newParent.mStatus === Status.Closed)
+                    {
+                        this.closeThread();
+                    }
+                    else if (newParent.mStatus === Status.Hidden)
+                    {
+                        if (this.mStatus === Status.Closed)
+                            this.reopenThread();
+                        this.hideThread();
+                    }
                 }
-                else
-                {
-                    //The thread was not successfully moved
-                    return false;
-                }
+                this.setLevels();
+
+                //The thread was successfully moved
+                return true;
             }
             else
             {
                 //The thread was not successfully moved
-                alert('You are not authorized to move this thread');
                 return false;
-            }
-	},
-
-
-        /**
-         * @param answer - The array in which the answer will be stored in.
-         * @param temp - The passes thread currently being tested.
-         * @param count - A counter used to keep track of the depth of the tree in relation to the starting thread.
-         * @param startDateTime -  Restrict returned posts to be after this time stamp. Default is the time stamp of the root post in the Buzz space.
-         * @param endDateTime -  Restrict returned posts to be before this time stamp. If unspecified all posts are returned.
-         * @param maxLevel - Restrict returned posts to be at most at the specified depth relative to the post. If this value is 0, minLevel will also be 0 only the specified post is returned.
-         * @param minLevel - Restrict returned posts to be at least at the specified depth relative to the post. Obviously it has to be less or equal to maxLevel. If both minLevel and maxLevel is 1, only the immediate children are retirieved.
-         * @param userGroup - Restricts returned posts to be limited to a specific user group.
-         * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
-         **/
-        queryThreadRecursive: function (answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
-	{
-		//Herman
-            //If temp is null we have reached the end of the tree
-            if (temp !== null)
-            {
-                //variables which will be used to check if the default values for endDateTime, userGroup and phraseSet should be set
-                var allPostsTime = false;
-                var allPostsUsers = false;
-                var allPostsPhrases = false;
-                       
-                //If no startDateTime value is supplied the default value is set to the root thread's DateTime
-                if (startDateTime === null || startDateTime === 0)
-                    //Make use of the getRoot function as provided by the Spaces team (as it is a variable of the BuzzSpace)
-                    startDateTime = this.getRoot().mDateTime;
-                
-                //If either endDateTime, userGroup or phraseSet is not supplied then set its relevant flag to true (this will mean that instead of checking against these values all releveant posts will be returned)
-                if (endDateTime === null || endDateTime === 0)
-                    allPostsTime = true;
-                if (userGroup === null || userGroup === 0)
-                    allPostsUsers = true;
-                if (phraseSet === null || phraseSet === 0)
-                    allPostsPhrases = true;
-
-                //For each of temp threads children
-                for (var i = 0;i < temp.getChildThreads().length; i++)
-                {
-                    //Check the startDateTime, minLevel and maxLevel query fileds
-                    if ((temp.mDateTime > startDateTime) && (++count >= minLevel) && (++count <= maxLevel))
-                    {
-                        //Is there no limit from the endDateTime field?
-                        if (allPostsTime)
-                        {
-                            /**
-                            *Example of how a userGroup data set looks
-                            *
-                            *  userGroup = [
-                            *     {user: 'John'},
-                            *     {user: 'Susan'}
-                            *  ];
-                            **/
-                            
-                            //Is there no limit from the userGroup field?
-                            if (allPostsUsers)
-                            {
-                                //Calls the function which adds the current thread's info to the answer array.
-                                addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
-                            }
-                            else if (userGroup.hasData(temp.mUser))//Else check the userGroup field.
-                            {
-                                    //Calls the function which adds the current thread's info to the answer array.
-                                   addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases); 
-                            }
-                        }
-                        else if(temp.mDateTime < endDateTime) //Else check the endDateTime field.
-                        {
-                            //Is there no limit from the userGroup field?
-                             if (allPostsUsers)
-                            {
-                                //Calls the function which adds the current thread's info to the answer array.
-                                addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
-                            }
-                            else if (userGroup.hasData(temp.mUser))//Else check the userGroup field.
-                            {
-                                //Calls the function which adds the current thread's info to the answer array.
-                                addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
-                            }
-                        }
-                    }
-                    //Call queryThreadRecursive again for each of the current thread's children
-                    queryThreadRecursive(temp.getChildThreads()[i], count, startDateTime, endDateTime, maxLevel, minLevel,userGroup, phraseSet);
-                }
-            }
-            else
-            {
-                //Once the entire tree has been traversed we return the array of queryInfo objects as an answer.
-                return answer;
             }
 	},
 
@@ -375,10 +257,9 @@ Thread.prototype =
     * @param userGroup - Restricts returned posts to be limited to a specific user group.
     * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
     **/
-    queryThread: function (startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
-    {
-        //Herman
-             console.log("here")   ;
+	queryThread: function (startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
+	{
+		//Herman
             //Variable to keep track of the current thread being checked as it traverses the tree
             var temp = this;
              //Variable to keep track of the depth of the temp thread in relation to the starting thread
@@ -391,104 +272,232 @@ Thread.prototype =
                 minLevel = 0;
             if (minLevel > maxLevel || minLevel === null)
                 minLevel = maxLevel;
-            
+
             //Call the recursive extension of this function to traverse the children of this thread
-            return this.queryThreadRecursive(answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet);
+            return temp.queryThreadRecursive(answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet);
+	},
+
+    /**
+     * @param answer - The array in which the answer will be stored in.
+     * @param temp - The passes thread currently being tested.
+     * @param count - A counter used to keep track of the depth of the tree in relation to the starting thread.
+     * @param startDateTime -  Restrict returned posts to be after this time stamp. Default is the time stamp of the root post in the Buzz space.
+     * @param endDateTime -  Restrict returned posts to be before this time stamp. If unspecified all posts are returned.
+     * @param maxLevel - Restrict returned posts to be at most at the specified depth relative to the post. If this value is 0, minLevel will also be 0 only the specified post is returned.
+     * @param minLevel - Restrict returned posts to be at least at the specified depth relative to the post. Obviously it has to be less or equal to maxLevel. If both minLevel and maxLevel is 1, only the immediate children are retirieved.
+     * @param userGroup - Restricts returned posts to be limited to a specific user group.
+     * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
+     **/
+    queryThreadRecursive: function (answer, temp, count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
+	{
+		//Herman
+        //variables which will be used to check if the default values for endDateTime, userGroup and phraseSet should be set
+        var allPostsTime = false;
+        var allPostsUsers = false;
+        var allPostsPhrases = false;
+
+        //If no startDateTime value is supplied the default value is set to the root thread's DateTime
+        if (startDateTime === null || startDateTime === 0) {
+            //Make use of the getRoot function as provided by the Spaces team (as it is a variable of the BuzzSpace)
+            startDateTime = temp.getRoot().getPost().mDateTime;
+        }
+
+        //If either endDateTime, userGroup or phraseSet is not supplied then set its relevant flag to true (this will mean that instead of checking against these values all releveant posts will be returned)
+        if (endDateTime === null || endDateTime === 0)
+            allPostsTime = true;
+        if (userGroup === null || userGroup === 0)
+            allPostsUsers = true;
+        if (phraseSet === null || phraseSet === 0)
+            allPostsPhrases = true;
+        ++count;
+
+        //Check the startDateTime, minLevel and maxLevel query fields
+        if ((temp.getPost().mDateTime >= startDateTime) && (count >= minLevel) && (count <= maxLevel)) {
+            //Is there no limit from the endDateTime field?
+            if (allPostsTime) {
+                /**
+                 *Example of how a userGroup data set looks
+                 *
+                 *  userGroup = [
+                 *     'John',
+                 *     'Susan'
+                 *  ];
+                 **/
+                //Is there no limit from the userGroup field?
+                if (allPostsUsers) {
+                    //Calls the function which adds the current thread's info to the answer array.
+                    temp.addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
+                }
+                else if (userGroup.indexOf(temp.mUser) !== -1)//Else check the userGroup field.
+                {
+                    //Calls the function which adds the current thread's info to the answer array.
+                    temp.addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
+                }
+            }
+            else if (temp.getPost().mDateTime <= endDateTime) //Else check the endDateTime field.
+            {
+                //Is there no limit from the userGroup field?
+                if (allPostsUsers) {
+                    //Calls the function which adds the current thread's info to the answer array.
+                    temp.addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
+                }
+                else if (userGroup.hasData(temp.mUser))//Else check the userGroup field.
+                {
+                    //Calls the function which adds the current thread's info to the answer array.
+                    temp.addToQueryAnswer(answer, temp, phraseSet, allPostsPhrases);
+                }
+            }
+        }
+
+        //If the current thread has children
+        if(typeof temp.mChildren !== 'undefined' && temp.getChildThreads().length > 0) {
+            //For each of temp threads children
+            for (var i = 0; i < temp.mChildren.length; i += 1) {
+                //Call queryThreadRecursive again for each of the current thread's children
+                temp.queryThreadRecursive(answer, temp.getChildThreads()[i], count, startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet);
+            }
+
+            //Once the entire tree has been traversed we return the array of queryInfo objects as an answer.
+            return answer;
+        }
+	},
+
+    /**
+     * @param answer - The array in which the answer will be stored in.
+     * @param temp - The passes thread currently being tested.
+     * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
+     * @param allPostsPhrases - A flag to indicate whether there are any phrases for which the query must search.
+     **/
+    addToQueryAnswer: function (answer, temp, phraseSet, allPostsPhrases)
+    {
+         //Variable to help check if the phrases contained in phraseSet all appear in the current thread's content
+         var flag = true;
+
+         /**
+          *Example of how a phraseSet data set looks
+          *
+          *  phraseSet = [
+          *     'example phrase',
+          *     'second example phrase'
+          *  ];
+          **/
+
+         //If no phraseSet was supplied then just return all relevant posts
+         if (!allPostsPhrases)
+         {
+            //For loop that traverses all the phrases in the phraseSet
+            for(var i in phraseSet)
+            {
+                //Compare each phrase in the phraseSet to the current thread's content
+                if((temp.getPost().mContent.indexOf(phraseSet[i]) === -1))
+                {
+                    //If a phrase is not found in the current thread's content then set the flag to false.
+                    flag = false;
+                }
+            }
+         }
+         //If all phrases were found we can then proceed to add this thread's info to the answer array
+         if (flag)
+         {
+              //If current thread does not have a parent thread then set the Parent ID to 0
+              var parentID = 0;
+              if (temp.mParent !== 0) {
+                  parentID = temp.mParent.mID;
+              }
+
+             /**
+              * queryInfo - an object of all the information about a post the query will return.
+              *
+              * ParentID - The ID of the current thread's parent.
+              *  Author - The user who posted the current thread.
+              * TimeStamp - The date and time the current threads was made.
+              * Content - The content of the post of the current thread;
+              * Status - The status of the current thread.
+              * Level - The depth level of the current thread in the main tree.
+              **/
+              var queryInfo =
+                  {ParentID:  parentID,
+                  Author:  temp.mUser,
+                  TimeStamp:  temp.getPost().mDateTime,
+                  Content:  temp.getPost().mContent,
+                  Status:  temp.mStatus,
+                  Level:  temp.mLevel};
+
+              //Add this thread's queryInfo object to the array of answers
+              answer.push(queryInfo);
+          }
     },
 
-        /**
-         * @param answer - The array in which the answer will be stored in.
-         * @param temp - The passes thread currently being tested.
-         * @param phraseSet - Restrict returned posts to be only posts that contains all the strings specified in the phrase set. The default is an empty set. If the set is empty all posts are returned.
-         * @param allPostsPhrases - A flag to indicate whether there are any phrases for which the query must search.
-         **/
-        addToQueryAnswer: function (answer, temp, phraseSet, allPostsPhrases)
+    /**
+     *   This functions hide Threads that the adminstrator doesnt want them
+     *   to be visible from the other users
+     **/
+    hideThread: function ()
+    {
+        //This checks whether the current Thread has children or not
+        if(this.getChildThreads().length >= 1)
         {
-             //Variable to help check if the phrases contained in phraseSet all appear in the current thread's content
-             var flag = true;
-                        
-             /**
-              *Example of how a phraseSet data set looks
-              *
-              *  phraseSet = [
-              *     {phrase: 'example phrase'},
-              *     {phrase: 'second example phrase'}
-              *  ];
-              **/
-                     
-             //If no phraseSet was supplied then just return all relevant posts
-             if (!allPostsPhrases)
-             {
-                //For loop that traverses all the phrases in the phraseSet
-                for(var i in phraseSet)
-                {
-                    //Compare each phrase in the phraseSet to the current thread's content
-                    if((temp.getPost().mContent.indexOf(phraseSet[i]) === -1))
-                    {
-                        //If a phrase is not found in the current thread's content then set the flag to false.
-                        flag = false;
-                    }
-                }
-             }
-             //If all phrases were found we can then proceed to add this thread's info to the answer array
-             if (flag)
-             {
-                 /**
-                  * queryInfo - an object of all the information about a post the query will return.
-                  * 
-                  * ParentID - The ID of the current thread's parent.
-                  *  Author - The user who posted the current thread.
-                  * TimeStamp - The date and time the current threads was made.
-                  * Content - The content of the post of the current thread;
-                  * Status - The status of the current thread.
-                  * Level - The depth level of the current thread in the main tree.
-                  **/
-                  var queryInfo = 
-                      {ParentID:  temp.mParent.mID,
-                      Author:  temp.mUser,
-                      TimeStamp:  temp.getPost().mDateTime,
-                      Content:  temp.getPost().mContent,
-                      Status:  temp.mStatus,
-                      Level:  temp.mLevel};
+            //This for loop iterate through the child Threads and Hide them
+            for(var i = 0; i < this.mChildren.length ; i += 1)
+            {
+                this.mChildren[i].hideThread();
+            }
+        }
+        //We change the status to Hidden to indicate that this Threads are now hidden,
+        //so no modification will be done to them
+        this.mStatus = Status.Hidden;
 
-                  //Add this thread's queryInfo object to the array of answers
-                  answer.push(queryInfo);
-              }
-        },
+    },
 
-	hideThread: function ()
-	{
-		//Sbo
+    /**
+     *   This functions unHide Threads that the adminstrator has Hidden before and
+     *   now the Adminstrator want them to be visible to the other users
+     **/
 
-	        if(this.getChildThreads().length >= 1)
-	        {
-	            for(var i = 0; i < this.mChildren.length ; i += 1)
-	            {
-	                this.mChildren[i].hideThread();
-	            }
-	        }
-	        this.mStatus = Status.Hidden;
+    unhideThread: function ()
+    {
 
-	},
-
-	unhideThread: function ()
-	{
-		//Sbo
-	
-	        if(this.getChildThreads().length >= 1)
-	        {
-	            for(var i = 0; i < this.mChildren.length ; i++)
-	            {
-	                this.mChildren[i].unhideThread();
-	            }
-	        }
-	        this.mStatus = Status.Open;
-	},
+        //This checks whether the current Thread has children or not
+        if(this.getChildThreads().length >= 1)
+        {
+            //This for loop iterate through the child Threads and unHide them
+            for(var i = 0; i < this.mChildren.length ; i++)
+            {
+                this.mChildren[i].unhideThread();
+            }
+        }
+        //We change the status to Open to indicate that this Threads are now Visible,
+        //and they can be viewed,commented to,e.t.c
+        this.mStatus = Status.Open;
+    },
 
 	markPostAsRead: function ()
 	{
-		//Sbo
+		//check if the post is read. if yes, return.
+		if(this.mStatus === Status.Read)
+        	{
+            		return;
+        	}
+        	else
+        	{
+            	//else read the post
+            	this.readPost(this.mUser,this.mID);
+        	}
+		
 	},
+	
+	readPost: function(userid, postid) 
+	{
+        	this.mUser = userid;
+        	this.mID = postid;
+
+        	//check if the current user and post exist in the database and change the status to read;
+        	if (this.mUser === MongoDbUser && this.mID === MongoDbPostId)
+        	{
+            		this.mStatus = Status.Read;
+        	}
+
+    },
 
     /**
      * Counts the number of thread children that resides beneath our current thread.
@@ -502,7 +511,7 @@ Thread.prototype =
 
         for (k; k < (this.mChildren.length); k++){
             ++counter;
-            counter += countChildren(this.mChildren[k]);
+            counter += this.countChildren(this.mChildren[k]);
         }
         return counter;
 	},
@@ -520,6 +529,16 @@ Thread.prototype =
             extraCount += _Node.countChildren(_Node.mChildren[i]);
         }
         return extraCount;
+    },
+
+    reopenThread: function ()
+    {
+        //Martha
+        //checks if the thread is still inaccessible
+        if(this.mStatus === Status.Closed) {
+            //reopens the current thread
+            this.unfreeze();
+        }
     }
 };
 
@@ -540,24 +559,9 @@ function ThreadSummary (_MimeType, _Content, _DateTime, _Thread)
  */
 ThreadSummary.prototype =
 {
-	constructor: ThreadSummary,
-
-	reopenThread: function ()
-	{
-		//Martha
-	        if(isAdministrator() === true) {
-	            //checks if the thread is still inaccessible
-	            if(Object.isFrozen(this.mThread) === true) {
-	                //reopens the current thread
-	                this.mThread.unfreeze();
-	            }
-	        }
-	        else
-	        {
-	            alert("You are not authorized to open this thread");
-	        }
-	}
+	constructor: ThreadSummary
 };
+
 
 module.exports = Thread;
 
@@ -602,35 +606,38 @@ exports.CreationOfThreads = {
         var date1 = new Date();
         var date2 = new Date();
         var date3 = new Date();
-        
+
+        //"Root" thread to be tested
         var myObject1 = new Thread(0, "Herman", 0, 2, "Question", "Test4.1", "Query test 1", date2, "Text");
-        //var myObject2 = new Thread(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime,
-        // _MimeType)
-        //(startDateTime, endDateTime, maxLevel, minLevel, userGroup, phraseSet)
-        
-        myObject1.submitPost(1, "Herman", "Question", "Test4.2", "Query test 2", "Text");
-        myObject1.submitPost(2, "Herman", "Question", "Test4.3", "Query test 3", "Text");
-	    
-        var userGroup = [{user: "Herman"}];
-        var phraseSet = [{phrase: "Query"}];
-        
+
+        //Child  of "root" thread
+        myObject1.submitPost(1, "Pete", "Question", "Test4.2", "Query test 2", "Text");
+        //Child  of child of "root" thread
+        myObject1.getChildThreads()[0].submitPost(2, "Joe", "Question", "Test4.3", "Query test 3", "Text");
+
+        //userGroup to test with
+        var userGroup = ["Herman", "Pete"];
+        //PhraseGroups to test with
+        var phraseSet1 = ["Query"];
+        var phraseSet2 = ["Query", "1"];
+
         var returnedObject1 = myObject1.queryThread(0,0,0,0,0,0);
         var returnedObject2 = myObject1.queryThread(date1,date3,0,0,0,0);
-        var returnedObject3 = myObject1.queryThread(0,0,3,1,0,0);
-        var returnedObject4 = myObject1.queryThread(0,0,0,0,userGroup,0);
-        var returnedObject5 = myObject1.queryThread(0,0,0,0,0,phraseSet);
-        
-        test.equal(returnedObject1[0].Content, "Query test", "Query threads test 1.1");
-	    test.equal(returnedObject1[1].Content, "Query test", "Query threads test 1.2");
-	    test.equal(returnedObject1[2].Content, "Query test", "Query threads test 1.3");
-	    test.equal(returnedObject1[0].Content, "Query test", "Query threads test 1");
-        test.equal(returnedObject2[0].Content, "Query test", "Query threads test 2");
-        test.equal(returnedObject3[0].Content, "Query test", "Query threads test 3");
-        test.equal(returnedObject4[0].Content, "Query test", "Query threads test 4.1");
-	    test.equal(returnedObject4[1].Content, "Query test", "Query threads test 4.2");
-        test.equal(returnedObject5[0].Content, "Query test", "Query threads test 5.1");
-	    test.equal(returnedObject5[1].Content, "Query test", "Query threads test 5.2");
-	    test.equal(returnedObject5[2].Content, "Query test", "Query threads test 5.3");
+        var returnedObject3 = myObject1.queryThread(0,0,4,1,0,0);
+        var returnedObject4 = myObject1.queryThread(0,0,4,0,userGroup,0);
+        var returnedObject5 = myObject1.queryThread(0,0,4,0,0,phraseSet1);
+        var returnedObject6 = myObject1.queryThread(0,0,4,0,0,phraseSet2);
+
+        test.equal(returnedObject1[0]["Content"], "Query test 1", "Query threads test 1");
+        test.equal(returnedObject2[0]["Content"], "Query test 1", "Query threads test 2");
+        test.equal(returnedObject3[0]["Content"], "Query test 2", "Query threads test 3.1");
+        test.equal(returnedObject3[1]["Content"], "Query test 3", "Query threads test 3.2");
+        test.equal(returnedObject4[0]["Content"], "Query test 1", "Query threads test 4.1");
+	    test.equal(returnedObject4[1]["Content"], "Query test 2", "Query threads test 4.2");
+        test.equal(returnedObject5[0]["Content"], "Query test 1", "Query threads test 5.1");
+	    test.equal(returnedObject5[1]["Content"], "Query test 2", "Query threads test 5.2");
+	    test.equal(returnedObject5[2]["Content"], "Query test 3", "Query threads test 5.3");
+        test.equal(returnedObject6[0]["Content"], "Query test 1", "Query threads test 6");
         test.done();
     },
 
@@ -639,13 +646,13 @@ exports.CreationOfThreads = {
     Test5: function(test)
     {
         var Obj = new Thread(0, "Martha", 0, 2, "Question", "Test5", "Query test 1", 2, "Text");
-        Obj.closeThread();
         /**
          * The Equal test function.
          * equal(currentValue, expectedValue, AssertionMessage);
          */
-        test.equal(Obj.mStatus, "Closed", "Failure to close a thread.");
         Obj.submitPost(32, "Jason", "Answer", "Closing of Children", "Testing the closing of child threads.", "Text");
+        Obj.closeThread();
+        test.equal(Obj.mStatus, "Closed", "Failure to close a thread.");
         test.equal(Obj.mChildren[0].mStatus, "Closed", "Failure to close child threads.");
         test.done();
 
@@ -656,8 +663,8 @@ exports.CreationOfThreads = {
         var Obj = new Thread(0, "Martha", 0, 0, "Question", "Test6", "Query test 1", 2, "Text");
         Obj.closeThread(); //Closing only to test reopening functionality
         test.equal(Obj.mStatus, "Closed", "Failed to close the thread to reopen.");
-        var newObj = Obj.reopenThread();
-        test.equal(newObj.mStatus, "Open", "Failed to reopen the thread.");
+        Obj.reopenThread();
+        test.equal(Obj.mStatus, "Open", "Failed to reopen the thread.");
         test.done();
     },
     Test7: function(test){
@@ -668,5 +675,18 @@ exports.CreationOfThreads = {
         test.equal(child.mID, "8395", "This post is not the child of 8394");
         test.equal(child, Obj.mChildren[0].getPost(), "Not the actual child");
         test.done();
+    },
+
+    Test8: function(test){
+        var dateT = new Date();
+        var Obj = new Thread(8000, "Jason", 0, 0, "Answer", "Testing Children", "Testing the child", dateT, "Text");
+        Obj.submitPost(8001, "Jason", PostType.Question, "Is it a child?", "This should be a child of object 8000:1", "Text");
+        Obj.submitPost(8002, "Jason", PostType.Question, "Is it a child1?", "This should be a child of object 8000:2", "Text");
+        Obj.hideThread();
+        test.equal(Obj.mStatus, Status.Hidden, "Could not hide the root object.");
+        test.equal(Obj.mChildren[0].mStatus, Status.Hidden, "Could not hide the first child of Obj.");
+        test.equal(Obj.mChildren[1].mStatus, Status.Hidden, "Could not hide the second child of Obj.");
+        test.done();
     }
 }
+
