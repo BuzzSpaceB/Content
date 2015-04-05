@@ -11,7 +11,6 @@ var threads = require('Threads');
 
 //Reporting
 
-
 function createReport()
 {
 
@@ -20,6 +19,36 @@ function createReport()
 function viewReport()
 {
 
+}
+
+function getThreadStats(posts, action, callback)
+{
+	reporting.getThreadStats(posts, action, callback);
+}
+
+function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback)
+{
+	reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback);
+}
+
+function exportThreadAppraisal(threadObject, dir, filename)
+{
+	reporting.exportThreadAppraisal(threadObject, dir, filename);
+}
+
+function importThreadAppraisal(dir, filename)
+{
+	reporting.importThreadAppraisal(dir, filename);
+}
+
+function exportThread(threadObject, dir, filename)
+{
+	reporting.exportThread(threadObject, dir, filename);
+}
+
+function importThread(dir, filename, callback)
+{
+	reporting.importThread(dir, filename, callback);
 }
 
 // Resources
@@ -113,6 +142,13 @@ function createApprasial(appraisalName, appraisalDescription)
   return response;
 }
 
+function saveCreatedApprasialLevels(level1, level2, level3)
+{
+	var appraisalLevelJson = status.createAppraisalLevels(level1, level2, level3);
+	
+	return appraisalLevelJson;
+}
+
 // Threads
 
 /**
@@ -130,6 +166,19 @@ function createThread(title, content)
 // Function exports
 
 // Reporting
+
+module.exports.getThreadStats = getThreadStats;
+
+module.exports.getThreadAppraisal = getThreadAppraisal;
+
+module.exports.exportThreadAppraisal = exportThreadAppraisal;
+
+module.exports.importThreadAppraisal = importThreadAppraisal;
+
+module.exports.exportThread = exportThread;
+
+module.exports.importThread = importThread;
+
 
 // Resources
 
