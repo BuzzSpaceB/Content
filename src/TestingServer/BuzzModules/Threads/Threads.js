@@ -563,8 +563,6 @@ ThreadSummary.prototype =
 };
 
 
-module.exports = Thread;
-
 /**
  Unit Testing of our Thread Module.
  */

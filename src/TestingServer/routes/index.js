@@ -162,8 +162,10 @@ router.get('/createThread', function(req,res,next){
 	// var page = req;
 	console.log(req.query.threadTitle);
 	console.log(req.query.threadContent);
-  var t;
-	// var t = new Threads(0, "Frikkie", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, "Yesterday", "Text");
+  var t = Threads(0, "Jason", 0, 0, "Question", "Test1", "This is a test", "Today", "Text");
+  // t.test();
+	// var t = new Threads(0, "Jason", 0, 0, "Question", "Test1", "This is a test", "Today", "Text");
+  console.log(t);
 	res.send(generateThreadCreatedPage(t));
 });
 

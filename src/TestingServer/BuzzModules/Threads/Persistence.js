@@ -10,69 +10,42 @@
     1. http://stackoverflow.com/questions/5625569/include-external-js-file-in-node-js-app
     2. http://mongoosejs.com/docs/
  */
+
+var mongoose = require('mongoose');
+var postModel = require('./Models/posts');
+var threadModel = require('./Models/threads');
+
 function doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
-    //Connecting to the database...
-    mongoose.connect('mongodb://localhost/test');
-
-    var database = mongoose.connection;
-    database.on('error', console.error.bind(console, 'connection error:'));
-    database.once('open', function (callback) {
-
-        //Database connected successfully: Continue
-        PostSchema = new Schema({
-            //_ID, _PostType, _Heading, _Content, _DateTime, _MimeType
-            ID: Schema.Types.ObjectId,
-            PostType: String,
-            Heading: String,
-            Content: String,
-            DateCreated: [Date],
-            MimeType: String
+    var db = mongoose.createConnection('mongodb://localhost/test');
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function (callback) {
+        // yay!
+        var thisDay = new Date();
+        postModel.collection.insert({
+            ID: Schema.ObjectId,
+            PostType: _PostType,
+            Heading: _Heading,
+            Content: _Content,
+            DateCreated: thisDay,
+            MimeType: _MimeType}, function(err, doc) {
+                if(err) console.log("Error inserting new post record.");
+                else console.log("New post persisted to database.");
         });
-        var dbPost = mongoose.model('Post', PostSchema); //Creates the model that we are going to save data to.
 
         var thisDay = new Date();
-        var postToSave = new dbPost({
-            ID: Schema.ObjectID,
-            PostType:   _PostType,
-            Heading:    _Heading,
-            Content:    _Content,
-            DateCreated:   thisDay,
-            MimeType:   _MimeType
-        });
-
-        postToSave.save(function (err, postToSave){
-            if (err) return console.error(err);
-            console.log("Successfully saved to database.");
-        });
-        
-        ThreadSchema = new Schema({
-            //_ID, _User, _Parent, _Level, _Post, _Children, _Status
-            ID: Schema.Types.ObjectId,
-            User: String,
-            Parent: Schema.Types.ObjectId,
-            Level: Number,
-            Post: Schema.Types.ObjectId,
-            Status: Schema.Types.ObjectId,
-            Children: [Schema.Types.ObjectId]
-        });
-        var dbThread = mongoose.model('Thread', ThreadSchema); //Creates the model that we are going to save data to.
-
-        var threadToSave = new dbThread({
-            ID: Schema.ObjectID,
+        threadModel.collection.insert({
+            ID: Schema.ObjectId,
             User: _User,
             Parent: _Parent,
             Level: _Level,
             Post: _Post,
             Status: _Status,
-            Children: _Children
-        });
-
-        threadToSave.save(function (err, threadToSave){
-            if (err) return console.error(err);
-            console.log("Successfully saved to database.");
+            Children: _Children}, function(err, doc) {
+            if(err) console.log("Error inserting new thread record.");
+            else console.log("New thread persisted to database.");
         });
     });
-    mongoose.connection.close(); //closing connection after were done.
+    mongoose.connection.close();
 }
 
 module.exports.doPersistence = doPersistence;

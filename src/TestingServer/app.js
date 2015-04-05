@@ -16,16 +16,16 @@ mongoose.connection.on('error', function (err) {
     console.log(err);
 });
 
-mongoose.connect("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
+mongoose.createConnection("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
 
-/*
-mongoose.createConnection('mongodb://localhost:27017/buzzResources', function(err) {
-    if(err) {
-        console.log('connection error', err);
-    } else {
-        console.log('Mongoose connection successful');
-    }
-});
+
+// mongoose.createConnection('mongodb://localhost:27017/buzzResources', function(err) {
+//     if(err) {
+//         console.log('connection error', err);
+//     } else {
+//         console.log('Mongoose connection successful');
+//     }
+// });
 
 
 mongoose.createConnection('mongodb://localhost:27017/test', function(err) {
@@ -35,7 +35,7 @@ mongoose.createConnection('mongodb://localhost:27017/test', function(err) {
         console.log('Mongoose connection successful');
     }
 });
-*/
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
