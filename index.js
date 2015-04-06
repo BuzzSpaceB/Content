@@ -13,17 +13,30 @@ var threads = require('Threads');
 
 function createReport()
 {
-
+    var numEntries = getThreadStats(posts, "Num");
+    var memCount = getThreadStats(posts, "MemCount");
+    var maxDepth = getThreadStats(posts, "MaxDepth");
+    var avgDepth = getThreadStats(posts, "AvgDepth");
+    
+    var returnStats = {};
+    returnStats.entriesCount = numEntries;
+    returnStats.memberCount = memCount;
+    returnStats.maximumDepth = maxDepth;
+    returnStats.averageDepth = avgDepth;
+    
+    return returnStats;
 }
 
-function viewReport()
+function getThreadStats(posts, action)
 {
-
-}
-
-function getThreadStats(posts, action, callback)
-{
-	reporting.getThreadStats(posts, action, callback);
+	var result;
+	
+	reporting.getThreadStats(posts, action, function(res)
+	{
+		result = res;
+	});
+	
+	return result;
 }
 
 function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback)
@@ -167,6 +180,8 @@ function createThread(title, content)
 
 // Reporting
 
+module.exports.createReport = createReport;
+
 module.exports.getThreadStats = getThreadStats;
 
 module.exports.getThreadAppraisal = getThreadAppraisal;
@@ -197,6 +212,7 @@ module.exports.modifyResourceType = modifyResourceType;
 // Status
 
 module.exports.storeApprasial = storeApprasial;
+
 module.exports.createApprasial = createApprasial;
 
 // Threads
