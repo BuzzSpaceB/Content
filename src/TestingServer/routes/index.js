@@ -320,7 +320,32 @@ router.get('/getThreadAppraisals', function(req,res,next){
     // Thus originally the function will be called as Threads.queryThread(.....);
 
     var posts = dummyQueryThread();
+    var directory = req.query.exportThreadAppraisals;
+    Reporting.exportThreadAppraisal(posts,"C:/Downloads/", "threadAppraisals.csv");
 
+    var page ="";
+    page += "<h3>" +  "csv File created!!! " + "</h3>" + "<br>" + "<p>" + "(The file will be saved in" + directory +"</p>";
+    res.send(page);
+});
+
+router.post('/postThreadAppraisal', function(req,res,next)
+{
+    res.location("/postThreadAppraisals");
+    res.redirect("/postThreadAppraisals");
+});
+
+router.get('/postThreadAppraisals', function(req,res,next){
+
+    /**
+     * In This function we will import the threads appraisals in a form of a csv file.
+     */
+
+    // first we gather the posts from queryThread - note that we call it without amy paramaters so it will return all threads
+    // if you only want spesific threads from a spesific time period it needs to be specified in the paramaters with high level integration
+    // Thus originally the function will be called as Threads.queryThread(.....);
+
+    var posts = dummyQueryThread();
+    var directory = req.query.exportThreadAppraisals;
     Reporting.exportThreadAppraisal(posts,"C:/Downloads/", "threadAppraisals.csv");
 
     var page ="";

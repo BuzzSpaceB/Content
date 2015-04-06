@@ -34,7 +34,15 @@
             </form>
             <form id="Reporting2" enctype="multipart/form-data" action="/getThreadAppraisal" method="post">
                 <h5>get Thread Appraisals:</h5>
-                <label>Get Thread Appraisal in the form of a csv:</label><input type="submit" value="print Report" name="submitFile">
+                <label>Get Thread Appraisal in the form of a csv:</label><br>
+                <label>Directory:</label><input type="text" name="exportThreadAppraisals"/><br>
+                <input type="submit" value="print Report" name="submitFile">
+            </form>
+            <form id="Reporting3" enctype="multipart/form-data" action="/postThreadAppraisal" method="post">
+                <h5>get Thread Appraisals:</h5>
+                <label>Import Thread Appraisals from a csv:</label><br>
+                <label>Directory:</label><input type="text" name="importThreadAppraisals" /><br>
+                <input type="submit" value="print Report" name="submitFile">
             </form>
 		</div>
 		<br>
