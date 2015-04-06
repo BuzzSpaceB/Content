@@ -324,10 +324,13 @@ router.get('/getThreadAppraisals', function(req,res,next){
     Reporting.exportThreadAppraisal(posts,"C:/Downloads/", "threadAppraisals.csv");
 
     var page ="";
-    page += "<h3>" +  "csv File created!!! " + "</h3>" + "<br>" + "<p>" + "(The file will be saved in" + directory +"</p>";
+    page += "<h3>" +  "csv File created!!! " + "</h3>" + "<br>" + "<p>" + "(The file will be saved in " + directory + ")"+"</p>";
     res.send(page);
 });
 
+/**
+ * Import Thread Appraisals
+ */
 router.post('/postThreadAppraisal', function(req,res,next)
 {
     res.location("/postThreadAppraisals");
@@ -345,12 +348,33 @@ router.get('/postThreadAppraisals', function(req,res,next){
     // Thus originally the function will be called as Threads.queryThread(.....);
 
     var posts = dummyQueryThread();
+    var results;
     var directory = req.query.exportThreadAppraisals;
-    Reporting.exportThreadAppraisal(posts,"C:/Downloads/", "threadAppraisals.csv");
+    Reporting.importThread("threadAppraisals.csv","C:/Downloads/", function(result)
+    {
+        results = result;
+    });
 
     var page ="";
-    page += "<h3>" +  "csv File created!!! " + "</h3>" + "<br>" + "<p>" + "(The file will be saved in C:/Downloads/)" +"</p>";
+    page += "<h3>" +  "csv File uploaded from : " + directory + "</h3>" ;
     res.send(page);
 });
 
+/**
+ * Export Thread - backs up the Thread and respective info in a form of a text file.
+ */
+
+router.post('/exportThread', function(req,res,next)
+{
+    res.location("/exportThreads");
+    res.redirect("/exportThreads");
+});
+
+router.get('/exportThreads', function(req,res,next){
+
+
+    var page ="";
+    page += "<h3>" +  "csv File uploaded from : "  + "</h3>" ;
+    res.send(page);
+});
 module.exports = router;
