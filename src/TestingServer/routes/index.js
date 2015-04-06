@@ -396,6 +396,13 @@ router.post('/exportThread', function(req,res,next)
 router.get('/exportThreads', function(req,res,next){
 
 
+    // first we gather the posts from queryThread - note that we call it without amy paramaters so it will return all threads
+    // if you only want spesific threads from a spesific time period it needs to be specified in the paramaters with high level integration
+    // Thus originally the function will be called as Threads.queryThread(.....);
+
+    var posts = dummyQueryThread();
+
+    Reporting.exportThread()
     var page ="";
     page += "<h3>" +  "csv File uploaded from : "  + "</h3>" ;
     res.send(page);
