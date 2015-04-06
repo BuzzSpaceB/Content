@@ -138,35 +138,132 @@ function modifyResourceType()
 }
 
 // Status
+/**
+ * variable used to set the status calculator if the NumPostAssessor is to be used
+ **/
+var numPostsCalc = new status.statusCalculatorRequest();
+numPostsCalc.ProfileAssessor = status.NumPostsAssessor;
+/**
+ * variable used to set the status calculator if the ThreadDepthAssessor is to be used
+ **/
+var treeDepthCalc = new status.statusCalculatorRequest();
+treeDepthCalc.ProfileAssessor = status.ThreadsDepthAssessor;
+/**
+ * variable used to do the status calculations
+ **/
+var statusCalc = new statusCalculatorRequest();
+statusCalc.ProfileAssessor = status.NumPostsAssessor;
 
 /**
- * Store an appraisal
- * @param {String} appraisal - a JSON string with information of the appraisal
- */
-function storeApprasial(appraisal)
-{
-  status.store(appraisal);
-}
-
-/**
- * Create an apprasial.
+ * Create an appraisal.
  * @param {String} appraisalName - the name of the appraisal
  * @param {String} appraisalDescription - the description of the appraisal
- */
-function createApprasial(appraisalName, appraisalDescription)
+ * @param {date} activeFrom - the date the appraisal is active from
+ * @param {date} activeTo - the date the appraisal is active to
+ * @param {array} appraisalLevels - the array of all the level names, what each level is called, ratings per level is automatic at the moment
+ **/
+function createApprasial(appraisalName, appraisalDescription, activeFrom, activeTo, appraisalLevels)
 {
-  var response = status.createAppraisal(appraisalName, appraisalDescription);
+	var appraisalJson = status.createAppraisal(appraisalName, appraisalDescription);
+	var appraisalActive = status.activePeriod(activeFrom, activeTo);
+	var appraisalLevelJson = "";
+	for(var i = 0; i < appraisalLevels.length; i++)
+	{
+		appraisalLevelJson += status.addAppraisalLevel((i+1), appraisalLevel[i]);
+	}
 
-  console.log("Content: Appresial created.");
-
-  return response;
+	clearAppraisalLevels();
+	
+	status.store();//appraisalJson, appraisalLevelJson, appraisalActive);
+	
+	console.log("Content: Appraisal created and stored.");
 }
 
-function saveCreatedApprasialLevels(level1, level2, level3)
+/**
+ * Returns all appraisals one by one to the callback function
+ * @param {Function} callback - the funtion to which the results are send, the next function to be called. 
+ **/
+function getAllAppraisals(callback)
 {
-	var appraisalLevelJson = status.createAppraisalLevels(level1, level2, level3);
-	
-	return appraisalLevelJson;
+	status.getAllAppraisalsForVote(callback);
+}
+
+/**
+ * Clears the appraisalLevels array used to convert the appraisal levels into a JSON string to store the appraisal
+ **/
+function clearAppraisalLevels()
+{
+	Status.clearAppraisalLevels();
+};
+
+/**
+ * Returns the appraisals name connected to the specified post ID provided
+ * @param {String} postID - The postID of the post which appraisal name is needed
+ * @param {Function} callback - The function to be called after the post has been found, to which the appraisal name is send
+ **/
+function getPostAppraisalName(postID, callback)
+{
+	status.getPostAppraisal(postID, callback);
+}
+
+/**
+ * Sets the appraisal of the post that is specified to the appraisal given
+ * @param {String} postID - The postID of the post which appraisal has to be set
+ * @param {String} appraisalName - The name of the appraisal to be set
+ **/
+function addAppraisalToPost(postID, appraisalName)
+{
+	status.setAppraisal(postID, appraisalName);
+}
+
+/**
+ * Save the appraisal icons
+ * @param {File} file - the file to be uploaded as from the HTML file elementFromPoint
+ * @parm {String} description - Description of the icon to be uploaded, used by the resources' upload function
+ **/
+function saveIcon(file, description)
+{
+	ResourceController.uploadResource(file, description);	
+}
+
+/**
+ * Returns the status of the user, who's userID is entered as parameter, to the callback function specified
+ * @parm {String} userId - userID of the user who's status is to be returned
+ * @parm {Function} func - callback function to be used once user has been found
+ **/
+function getStatus(userId, func)
+{
+	status.getStatusForProfile(userId, func);
+}
+
+/**
+ * sets The status calculator to the desired method of calculation
+ * @param {String} statusCalcRequest - String used to determine the StatusRequest object containing the method of calculating the status
+ **/
+function setStatusCalculator(statusCalcRequest)
+{
+	var tempObj = JSON.parse(statusCalcRequest);
+	if(statusCalcRequest == "Num Post Assessor")
+		statusCalc = Status.setStatusCalculator(numPostsCalc);
+	else	
+		statusCalc = Status.setStatusCalculator(treeDepthCalc);
+}
+
+/**
+ * Updates all users' profile status values according to a specific criteria depending on what status calculator is active
+ **/
+function updateAllProfiles()
+{
+	status.assessProfile(myResult.ProfileAssessor, "", status.updateAllStatusPoints);
+}
+
+/**
+ * Updates specified user's profile status value according to a specific criteria depending on what status calculator is active
+ * @parm {String} user - userID of the user who's status is to be updated
+ **/
+function updateProfile(user)
+{
+	status.assessProfile(myResult.ProfileAssessor, user, status.updateStatusPointsForProfile);
 }
 
 // Threads
@@ -219,8 +316,25 @@ module.exports.modifyResourceType = modifyResourceType;
 // Status
 
 module.exports.storeApprasial = storeApprasial;
-
 module.exports.createApprasial = createApprasial;
+
+module.exports.getAllAppraisals = getAllAppraisals;
+
+module.exports.clearAppraisalLevels = clearAppraisalLevels;
+
+module.exports.getPostAppraisalName = getPostAppraisalName;
+
+module.exports.addAppraisalToPost = addAppraisalToPost;
+
+module.exports.saveIcon = saveIcon;
+
+module.exports.getStatus = getStatus;
+
+module.exports.setStatusCalculator = setStatusCalculator;
+
+module.exports.updateAllProfiles = updateAllProfiles;
+
+module.exports.updateProfile = updateProfile;
 
 // Threads
 
