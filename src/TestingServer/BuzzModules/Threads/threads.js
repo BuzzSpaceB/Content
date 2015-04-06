@@ -1,3 +1,5 @@
+var persist = require('./Persistence.js');
+
 Status =
 {
 	Open: "Open",
@@ -51,7 +53,7 @@ function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _Da
 	var Schema = mongoose.Schema;
 	var ObjectID = Schema.ObjectId;
 	
-	require('./Persistence.js').doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, this.mPost, this.mStatus, this.mChildren);
+	persist.doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, this.mPost, this.mStatus, this.mChildren);
 };
 
 /**
