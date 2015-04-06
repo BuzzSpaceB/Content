@@ -285,11 +285,13 @@ router.get('/viewReport', function(req, res, next) {
     {
         avgDepth = result;
     });
+//*******************************************the threadStatistics.html needs to go here
+    var page2 = "";
+    page2 += ''
 
-
-    var page = "";
-    page += "<p>" + num + "<br/>" + memCount + "<br/>" + maxDepth +  "<br/>" + avgDepth + "<br/>" + +"</p>";
-    res.send(page);
+var page = "";
+    page += "<p>" + num + "<br/>" + memCount + "<br/>" + maxDepth +  "<br/>" + avgDepth + "<br/>"  +"</p>";
+    res.send(page2);
 
 
 });
