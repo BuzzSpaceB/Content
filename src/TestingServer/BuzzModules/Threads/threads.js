@@ -36,6 +36,24 @@ function Post (_ID, _PostType, _Heading, _Content, _DateTime, _MimeType)
 	this.mMimeType = _MimeType;
 }
 
+
+function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType)
+{
+	this.mID = _ID;
+	this.mUser = _User;
+	this.mParent = _Parent;
+	this.mPost = new Post(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType);
+	this.mChildren = [];
+	this.mStatus = Status.Open;
+  	this.mLevel = _Level;
+
+	var mongoose = require('mongoose');
+	var Schema = mongoose.Schema;
+	var ObjectID = Schema.ObjectId;
+	
+	require('./Persistence.js').doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, this.mPost, this.mStatus, this.mChildren);
+};
+
 /**
     All functions that are permitted within the scope of a post.
  */
@@ -76,28 +94,6 @@ module.exports = function(mID, mUser, mParent, mLevel, mPostType, mHeading, mCon
 			require('./Persistence.js').doPersistence(Schema, mongoose, mPostType, mHeading, mContent, mMimeType, mUser, mParent, mLevel, this.mPost, this.mStatus, this.mChildren);
 		},
 
-		// Post: function(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType)
-		// {
-		//     *
-		//         A post will have its own heading for the content it contains.
-		//         This is in addition to the thread heading/description.
-		//        |Thread              |
-		//        ||=================| |
-		//        ||Post Heading     | |
-		//        ||=================| |
-		//        ||                 | |
-		//        ||  text content   | |
-		//        ||                 | |
-		//        ||_________________| |
-		     
-		// 	this.mID = _ID;
-		//  	this.mPostHeading = _Heading;
-		// 	this.mPostType = _PostType;
-		// 	this.mContent = _Content;
-		// 	this.mDateTime = _DateTime;
-		// 	this.mMimeType = _MimeType;
-		// },
-
 		getChildThreads: function ()
 		{
 			return this.mChildren;
@@ -114,6 +110,7 @@ module.exports = function(mID, mUser, mParent, mLevel, mPostType, mHeading, mCon
 	     */
 		submitPost: function (_ID, _User, _PostType, _Heading, _Content, _MimeType){
 		      //Jason
+		      console.log("submitPost called");
 		    var dateCreated = new Date();
 		    var childThread = new Thread(_ID, _User, this, (this.mLevel + 1), _PostType, _Heading, _Content, dateCreated, _MimeType);
 		    this.mChildren.push(childThread);

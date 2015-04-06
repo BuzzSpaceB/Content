@@ -6,7 +6,7 @@ var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
 var Threads = require('../BuzzModules/Threads/threads');
 var Status = require('../BuzzModules/Status/StatusFunctions.js');
-var async = require('async');
+// var async = require('async');
 // var Reporting = require('../BuzzModules/Reporting/ReportingB');
 
 var calls = [];
@@ -163,22 +163,21 @@ router.get('/createThread', function(req,res,next){
   //              _ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType
   var date = new Date();
   var t;
-  calls.push(function(callback){
-    t = Threads(0, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
-    t.create();
-    console.log("thread created");
-    callback(null,t);
-  });  
+  t = Threads(0, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
+  t.create();
+  console.log("thread created");
   res.send(generateThreadCreatedPage(t));
 });
 
 function generateThreadCreatedPage(t){
-  var p = "test";
-
-  async.parallel(calls,function(err,result){
+  var p = "test";  
+    //_ID, _User, _PostType, _Heading, _Content, _MimeType
+  // console.log(result);
+  setTimeout(function(){
+    t.submitPost(2, "Herman", "Question", "Test3.3", "Thread to move", "Text");
+  },5000);
     
-    
-  });
+  
 	
   
   return p;

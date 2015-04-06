@@ -19,7 +19,7 @@ function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeTy
     //var db = mongoose.createConnection('mongodb://localhost/test');
     //mongoose.connect('mongodb://localhost/test');
     var db = mongoose.connection;
-    mongoose.connect('mongodb://localhost/test');
+    mongoose.connect('mongodb://localhost/thread');
     db.on('error', console.error.bind(console, 'connection error:'));
     db.on('open', function (callback) {
         // yay!

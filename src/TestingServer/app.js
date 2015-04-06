@@ -16,7 +16,7 @@ mongoose.connection.on('error', function (err) {
     console.log(err);
 });
 
-mongoose.createConnection("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
+// mongoose.createConnection("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
 
 
 // mongoose.createConnection('mongodb://localhost:27017/buzzResources', function(err) {
