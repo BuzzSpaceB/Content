@@ -7,14 +7,14 @@ var bodyParser = require('body-parser');
 //var configDB = require('./config');
 var mongoose = require('mongoose');
 
-mongoose.connection.on('open', function (ref) {
-    console.log('Connected to mongo server.');
-});
+// mongoose.connection.on('open', function (ref) {
+//     console.log('Connected to mongo server.');
+// });
 
-mongoose.connection.on('error', function (err) {
-    console.log('Could not connect to mongo server!');
-    console.log(err);
-});
+// mongoose.connection.on('error', function (err) {
+//     console.log('Could not connect to mongo server!');
+//     console.log(err);
+// });
 
 // mongoose.createConnection("mongodb://d3user:DdJXhhsd2@proximus.modulusmongo.net:27017/purYv9ib");
 
@@ -28,13 +28,13 @@ mongoose.connection.on('error', function (err) {
 // });
 
 
-mongoose.createConnection('mongodb://localhost:27017/test', function(err) {
-    if(err) {
-        console.log('connection error', err);
-    } else {
-        console.log('Mongoose connection successful');
-    }
-});
+// mongoose.connect('mongodb://localhost:27017/test', function(err) {
+//     if(err) {
+//         console.log('connection error', err);
+//     } else {
+//         console.log('Mongoose connection successful');
+//     }
+// });
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

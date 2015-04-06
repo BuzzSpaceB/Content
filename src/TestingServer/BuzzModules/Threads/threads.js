@@ -80,18 +80,28 @@ ThreadSummary.prototype =
 
 
 
-module.exports = function(mID, mUser, mParent, mLevel, mPostType, mHeading, mContent, mDateTime, mMimeType){
+module.exports = function(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType){
 	return{
+
+		getHeading: function(){
+			return _Heading;
+		},
+
 		create: function(){
-			// this.mChildren = [];
-			this.mPost = new Post(mID, mPostType, mHeading, mContent, mDateTime, mMimeType);
-			this.mStatus = Status.Open;
+			console.log("create() called");
+			this.mID = _ID;
+			this.mUser = _User;
+			this.mParent = _Parent;
+			this.mPost = new Post(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType);
 			this.mChildren = [];
+			this.mStatus = Status.Open;
+		  	this.mLevel = _Level;
+
 			var mongoose = require('mongoose');
 			var Schema = mongoose.Schema;
 			var ObjectID = Schema.ObjectId;
 	
-			require('./Persistence.js').doPersistence(Schema, mongoose, mPostType, mHeading, mContent, mMimeType, mUser, mParent, mLevel, this.mPost, this.mStatus, this.mChildren);
+			require('./Persistence.js').doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, this.mPost, this.mStatus, this.mChildren);
 		},
 
 		getChildThreads: function ()
@@ -112,7 +122,7 @@ module.exports = function(mID, mUser, mParent, mLevel, mPostType, mHeading, mCon
 		      //Jason
 		      console.log("submitPost called");
 		    var dateCreated = new Date();
-		    var childThread = new Thread(_ID, _User, this, (this.mLevel + 1), _PostType, _Heading, _Content, dateCreated, _MimeType);
+		    var childThread = this.create(_ID, _User, this, (this.mLevel + 1), _PostType, _Heading, _Content, dateCreated, _MimeType);
 		    this.mChildren.push(childThread);
 		},
 

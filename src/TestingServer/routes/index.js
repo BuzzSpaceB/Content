@@ -165,7 +165,6 @@ router.get('/createThread', function(req,res,next){
   var t;
   t = Threads(0, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
   t.create();
-  console.log("thread created");
   res.send(generateThreadCreatedPage(t));
 });
 
@@ -173,9 +172,9 @@ function generateThreadCreatedPage(t){
   var p = "test";  
     //_ID, _User, _PostType, _Heading, _Content, _MimeType
   // console.log(result);
-  setTimeout(function(){
-    t.submitPost(2, "Herman", "Question", "Test3.3", "Thread to move", "Text");
-  },5000);
+  // setTimeout(function(){
+  //   t.submitPost(2, "Herman", "Question", "Test3.3", "Thread to move", "Text");
+  // },5000);
     
   
 	

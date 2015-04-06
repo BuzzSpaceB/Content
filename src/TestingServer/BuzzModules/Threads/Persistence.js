@@ -18,10 +18,10 @@ var threadModel = require('./Models/threads');
 function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
     //var db = mongoose.createConnection('mongodb://localhost/test');
     //mongoose.connect('mongodb://localhost/test');
-    var db = mongoose.connection;
     mongoose.connect('mongodb://localhost/thread');
+    var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    db.on('open', function (callback) {
+    db.once('open', function (callback) {
         // yay!
         // var thisDay = new Date();
         // postModel.collection.insert({
@@ -48,10 +48,12 @@ function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeTy
             else console.log("New thread persisted to database.");
         });
     });
-    //mongoose.connection.close(function(){
-      //  mongoose.disconnect();
-      //  console.log("Closing database connection...");
-    //});
+    // mongoose.disconnect(); 
+    // mongoose.connection.close(function(){
+    //    mongoose.disconnect();
+    //    console.log("Closing database connection...");
+    // });
+    // db.close();
 }
 
 module.exports.doPersistence = doPersistence;
