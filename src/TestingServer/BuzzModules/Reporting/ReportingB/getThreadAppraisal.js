@@ -56,6 +56,7 @@ module.exports = function(setOfPosts, setOfMembers, setOfAppraisals, actionKeywo
     }
 
     /**
+
      * Switch statement result returned upon each of the action keywords: ALL, SUM, AVG, MAX, MIN and NUM
      */
     switch(localActionKeyword) {
