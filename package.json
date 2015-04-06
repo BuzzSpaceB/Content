@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "main": "index.js",
+  "name": "Content",
+  "description": "The Content module for Buzz",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BuzzSpaceB/Content"
+  },
+  "bugs": {
+    "url": "https://github.com/BuzzSpaceB/Content/issues"
+  },
+  "homepage": "https://github.com/BuzzSpaceB/Content",
+  "contributors": [
+    {
+      "name": "Daniel Christopher Alves Araujo",
+      "email": "u13073878@tuks.co.za"
+    },
+    {
+      "name": "Isabel Nel",
+      "email": "isabel.nel.isabel@gmail.com"
+    },
+    {
+      "name": "Elzahn Botha",
+      "email": "elzahnbotha@gmail.com"
+    },
+    {
+      "name": "Frikkie Snyman",
+      "email": "frikkie.snyman@live.co.za"
+    }
+  ],
+  "dependencies": {
+      "resources": "git://github.com/BuzzSpaceB/Resources#master",
+      "status": "git://github.com/BuzzSpaceB/Status#master",
+      "reporting": "git://github.com/BuzzSpaceB/Reporting#master",
+      "threads": "git://github.com/BuzzSpaceB/Threads#master"
+    }
+}
