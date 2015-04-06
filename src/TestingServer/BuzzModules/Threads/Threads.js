@@ -81,7 +81,7 @@ function Thread (_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _Da
 	this.mPost = new Post(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType);
 	this.mChildren = [];
 	this.mStatus = Status.Open;
-        this.mLevel = _Level;
+  this.mLevel = _Level;
 
 	var mongoose = require('mongoose');
 	var Schema = mongoose.Schema;
@@ -110,12 +110,12 @@ Thread.prototype =
      * @param _Content - The text content of the post in the new thread.
      * @param _MimeType - Describes the content syntax of the new post content.
      */
-    submitPost: function (_ID, _User, _PostType, _Heading, _Content, _MimeType){
-        //Jason
-        var dateCreated = new Date();
-        var childThread = new Thread(_ID, _User, this, (this.mLevel + 1), _PostType, _Heading, _Content, dateCreated, _MimeType);
-        this.mChildren.push(childThread);
-    },
+  submitPost: function (_ID, _User, _PostType, _Heading, _Content, _MimeType){
+      //Jason
+      var dateCreated = new Date();
+      var childThread = new Thread(_ID, _User, this, (this.mLevel + 1), _PostType, _Heading, _Content, dateCreated, _MimeType);
+      this.mChildren.push(childThread);
+  },
 
 	getPost: function ()
 	{
@@ -543,7 +543,8 @@ Thread.prototype =
 };
 
 module.exports = function(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType){
-  return new Thread(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType);
+  var obj = new Thread(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType);
+  return obj;
 }
 
 

@@ -23,7 +23,6 @@ function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeTy
     db.on('error', console.error.bind(console, 'connection error:'));
     db.on('open', function (callback) {
         // yay!
-        console.log("Testing here");
         // var thisDay = new Date();
         // postModel.collection.insert({
         //     ID: Schema.ObjectId,
