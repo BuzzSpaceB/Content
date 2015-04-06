@@ -29,12 +29,12 @@
             <!-- **********************Reporting********************-->
 			<h2>Reporting module</h2>
             <form id="Reporting1" enctype="multipart/form-data" action="/createReport" onsubmit="" method="post">
-                <h4> get report in the form of csv:</h4>
                 <h5>get Thread Stats:</h5>
                 <label>Get Thread Statistics:</label><input type="submit" value="print Report" name="submitFile">
             </form>
-            <form id="Reporting2" enctype="multipart/form-data" action="" method="post">
-                <label> </label><input type="submit" value="get" name="submitFile">
+            <form id="Reporting2" enctype="multipart/form-data" action="/getThreadAppraisal" method="post">
+                <h5>get Thread Appraisals:</h5>
+                <label>Get Thread Appraisal in the form of a csv:</label><input type="submit" value="print Report" name="submitFile">
             </form>
 		</div>
 		<br>
