@@ -151,9 +151,14 @@ treeDepthCalc.ProfileAssessor = status.ThreadsDepthAssessor;
 /**
  * variable used to do the status calculations
  **/
-var statusCalc = new statusCalculatorRequest();
+var statusCalc = new status.statusCalculatorRequest();
 statusCalc.ProfileAssessor = status.NumPostsAssessor;
-
+/**
+ * Functions needed to access the DB
+ **/
+var Threads = require('./models/thread');
+var Users = require('./models/user');
+var Posts = require('./models/post');
 /**
  * Create an appraisal.
  * @param {String} appraisalName - the name of the appraisal
@@ -167,14 +172,15 @@ function createApprasial(appraisalName, appraisalDescription, activeFrom, active
 	var appraisalJson = status.createAppraisal(appraisalName, appraisalDescription);
 	var appraisalActive = status.activePeriod(activeFrom, activeTo);
 	var appraisalLevelJson = "";
+	
 	for(var i = 0; i < appraisalLevels.length; i++)
 	{
-		appraisalLevelJson += status.addAppraisalLevel((i+1), appraisalLevel[i]);
+		appraisalLevelJson = status.addAppraisalLevel((i+1), appraisalLevels[i]);
 	}
-
+	
 	clearAppraisalLevels();
 	
-	status.store();//appraisalJson, appraisalLevelJson, appraisalActive);
+	status.store(appraisalLevelJson);//appraisalJson, appraisalLevelJson, appraisalActive);
 	
 	console.log("Content: Appraisal created and stored.");
 }
@@ -193,8 +199,8 @@ function getAllAppraisals(callback)
  **/
 function clearAppraisalLevels()
 {
-	Status.clearAppraisalLevels();
-};
+	status.clearAppraisalLevels();
+}
 
 /**
  * Returns the appraisals name connected to the specified post ID provided
@@ -223,7 +229,8 @@ function addAppraisalToPost(postID, appraisalName)
  **/
 function saveIcon(file, description)
 {
-	ResourceController.uploadResource(file, description);	
+	//ResourceController.uploadResource(file, description);	
+	uploadResources(file, description);
 }
 
 /**
@@ -243,10 +250,10 @@ function getStatus(userId, func)
 function setStatusCalculator(statusCalcRequest)
 {
 	var tempObj = JSON.parse(statusCalcRequest);
-	if(statusCalcRequest == "Num Post Assessor")
-		statusCalc = Status.setStatusCalculator(numPostsCalc);
+	if(tempObj == "Num Post Assessor")
+		statusCalc = status.setStatusCalculator(numPostsCalc);
 	else	
-		statusCalc = Status.setStatusCalculator(treeDepthCalc);
+		statusCalc = status.setStatusCalculator(treeDepthCalc);
 }
 
 /**
@@ -254,7 +261,31 @@ function setStatusCalculator(statusCalcRequest)
  **/
 function updateAllProfiles()
 {
-	status.assessProfile(myResult.ProfileAssessor, "", status.updateAllStatusPoints);
+	Users.find({}, function(err, user)
+	{
+		if(err)
+		{
+			console.log("ERR: " + err);
+		}
+		else
+		{
+			user.forEach(function(auser)
+			{
+				Threads.find({"user_id":auser.user_id}, function(err, auser)
+				{
+					if(err)
+					{
+						console.log("ERR: " + err);
+					}
+					else
+					{
+						status.assessProfile(statusCalc.ProfileAssessor, "", status.updateAllStatusPoints);
+					}
+				});
+			});
+		}
+	});
+	
 }
 
 /**
@@ -263,7 +294,7 @@ function updateAllProfiles()
  **/
 function updateProfile(user)
 {
-	status.assessProfile(myResult.ProfileAssessor, user, status.updateStatusPointsForProfile);
+	status.assessProfile(statusCalc.ProfileAssessor, user, status.updateStatusPointsForProfile);
 }
 
 // Threads
@@ -315,7 +346,6 @@ module.exports.modifyResourceType = modifyResourceType;
 
 // Status
 
-module.exports.storeApprasial = storeApprasial;
 module.exports.createApprasial = createApprasial;
 
 module.exports.getAllAppraisals = getAllAppraisals;
