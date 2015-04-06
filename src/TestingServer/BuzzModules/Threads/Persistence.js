@@ -15,11 +15,13 @@ var mongoose = require('mongoose');
 var postModel = require('./Models/posts');
 var threadModel = require('./Models/threads');
 
+mongoose.connect('mongodb://localhost/thread');
+var db = mongoose.connection;
+
 function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
     //var db = mongoose.createConnection('mongodb://localhost/test');
     //mongoose.connect('mongodb://localhost/test');
-    mongoose.connect('mongodb://localhost/thread');
-    var db = mongoose.connection;
+    
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function (callback) {
         // yay!
