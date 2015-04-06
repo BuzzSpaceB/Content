@@ -208,19 +208,89 @@ function uploadResourcesPage(cont) {
     return page;
 }
 //**********************Reporting********************-->
+
+
+/**
+ * Isabel adding dummy function if queryThread gets called with no paramaters
+ * Then it should return all threads
+ * NOTE - getThreadStats will use queryThread on a specific thread thus when High Level integration
+ * you will need to specify the paramaters of queryThread to get the wanted results of wanted threads
+ **/
+
+function dummyQueryThread(){
+
+    var postList = [
+        {"ParentID":"0", "Author":"1", "TimeStamp":"2015.03.15", "Content":"This is the first post I am writing here. My name is Eric.", "Status":"visible"},
+        {"ParentID":"1", "Author":"2", "TimeStamp":"2015.03.17", "Content":"Hi! My name is Jonah.", "Status":"visible"},
+        {"ParentID":"2", "Author":"3", "TimeStamp":"2015.03.17", "Content":"My name is Sarah. I am studying Computer Science", "Status":"visible"},
+        {"ParentID":"2", "Author":"1", "TimeStamp":"2015.03.18", "Content":"I am also studying Computer Science.", "Status":"visible"},
+        {"ParentID":"2", "Author":"2", "TimeStamp":"2015.03.18", "Content":"I wrote something that caused my post to be made hidden.", "Status":"hidden"},
+        {"ParentID":"2", "Author":"0", "TimeStamp":"2015.03.19", "Content":"I am learning JavaScript.", "Status":"visible"},
+        {"ParentID":"2", "Author":"0", "TimeStamp":"2015.03.19", "Content":"I am learning Java.", "Status":"visible"}
+    ];
+
+    var jsonObject = JSON.stringify(postList);
+
+    return jsonObject;
+}
+
 router.post('/createReport', function(req, res, next)
 {
-//call functions
-    //Reporting.(dbURL, collection);
     res.location('./viewReport');
     res.redirect('./viewReport');
 });
 
 router.get('/viewReport', function(req, res, next) {
-//show changes
+
+    /**
+     * In this function I will get a set of posts returned by the queryThread function and add it as
+     * paramater in getThreadStats functions with the differant keywords to gather the respective statistic
+     **/
+
+    // first we gather the posts from queryThread - note that we call it without amy paramaters so it will return all threads
+    // if you only want spesific threads from a spesific time period it needs to be specified in the paramaters with high level integration
+    // Thus originally the function will be called as Threads.queryThread(.....);
+
+    var posts = dummyQueryThread();
+
+    /**
+     * getThreadStats makes use of a call back function and which basically just returns the value of the function it calls
+     * @param returnVal will just provide the info returned by the callback function;
+     */
+
+    // now we get the number of entries in the dataset that was created by using the keyword 'Num'
+    var num;
+    Reporting.getThreadStats(posts, "Num",function(result)
+    {
+      num = result;
+    });
+
+    // now we get the count of the number of members who are the creators of posts in the dataset with the keyword 'MemCount'
+    var memCount;
+    Reporting.getThreadStats(posts, "MemCount",function(result)
+    {
+        memCount = result;
+    });
+
+    // now we get the maximum depth of a post in the queried thread tree with the keyword 'MaxDepth'
+    var maxDepth;
+    Reporting.getThreadStats(posts, "MaxDepth",function(result)
+    {
+        maxDepth = result;
+    });
+
+    // now we get the average depth of a post i the queries thread tree with the keyword 'AvgDepth'
+    var avgDepth;
+    Reporting.getThreadStats(posts, "AvgDepth",function(result)
+    {
+        avgDepth = result;
+    });
+
+
     var page = "";
-    page += "<p>" + "***" + "<br/>" + "</p>";
+    page += "<p>" + num + "<br/>" + memCount + "<br/>" + maxDepth +  "<br/>" + avgDepth + "<br/>" + +"</p>";
     res.send(page);
+
 
 });
 
