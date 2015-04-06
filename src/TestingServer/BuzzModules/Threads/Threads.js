@@ -542,6 +542,11 @@ Thread.prototype =
     }
 };
 
+module.exports = function(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType){
+  return new Thread(_ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType);
+}
+
+
 /**
     The constructor for a thread summarizer.
     @constructor

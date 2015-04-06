@@ -15,22 +15,26 @@ var mongoose = require('mongoose');
 var postModel = require('./Models/posts');
 var threadModel = require('./Models/threads');
 
-function doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
-    var db = mongoose.createConnection('mongodb://localhost/test');
+function doPersistence(Schema, mongoose1, _PostType, _Heading, _Content, _MimeType, _User, _Parent, _Level, _Post, _Status, _Children){
+    //var db = mongoose.createConnection('mongodb://localhost/test');
+    //mongoose.connect('mongodb://localhost/test');
+    var db = mongoose.connection;
+    mongoose.connect('mongodb://localhost/test');
     db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function (callback) {
+    db.on('open', function (callback) {
         // yay!
-        var thisDay = new Date();
-        postModel.collection.insert({
-            ID: Schema.ObjectId,
-            PostType: _PostType,
-            Heading: _Heading,
-            Content: _Content,
-            DateCreated: thisDay,
-            MimeType: _MimeType}, function(err, doc) {
-                if(err) console.log("Error inserting new post record.");
-                else console.log("New post persisted to database.");
-        });
+        console.log("Testing here");
+        // var thisDay = new Date();
+        // postModel.collection.insert({
+        //     ID: Schema.ObjectId,
+        //     PostType: _PostType,
+        //     Heading: _Heading,
+        //     Content: _Content,
+        //     DateCreated: thisDay,
+        //     MimeType: _MimeType}, function(err, doc) {
+        //         if(err) console.log("Error inserting new post record.");
+        //         else console.log("New post persisted to database.");
+        // });
 
         var thisDay = new Date();
         threadModel.collection.insert({
@@ -41,11 +45,14 @@ function doPersistence(Schema, mongoose, _PostType, _Heading, _Content, _MimeTyp
             Post: _Post,
             Status: _Status,
             Children: _Children}, function(err, doc) {
-            if(err) console.log("Error inserting new thread record.");
+            if(err) console.log("Error inserting new thread record." + err);
             else console.log("New thread persisted to database.");
         });
     });
-    mongoose.connection.close();
+    //mongoose.connection.close(function(){
+      //  mongoose.disconnect();
+      //  console.log("Closing database connection...");
+    //});
 }
 
 module.exports.doPersistence = doPersistence;

@@ -160,18 +160,15 @@ router.post('/createThread', function(req,res,next)
 
 router.get('/createThread', function(req,res,next){
 	// var page = req;
-	console.log(req.query.threadTitle);
-	console.log(req.query.threadContent);
-  var t = Threads(0, "Jason", 0, 0, "Question", "Test1", "This is a test", "Today", "Text");
-  // t.test();
-	// var t = new Threads(0, "Jason", 0, 0, "Question", "Test1", "This is a test", "Today", "Text");
-  console.log(t);
+	// console.log(req.query.threadTitle);
+	// console.log(req.query.threadContent);
+  //              _ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType
+  var date = new Date();
+  var t = Threads(0, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
 	res.send(generateThreadCreatedPage(t));
 });
 
 function generateThreadCreatedPage(t){
-	// var t = new Threads(0, "Frikkie", 0, 0, "Question", "req.query.threadTitle", "req.query.threadContent", "Yesterday", "Text");
-	// console.log(t.queryThread(0,0,0,0,0,0));
 	return "Thread succesfully created";
 }
 
