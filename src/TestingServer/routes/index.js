@@ -288,15 +288,38 @@ router.get('/viewReport', function(req, res, next) {
     {
         avgDepth = result;
     });
-//*******************************************the threadStatistics.html needs to go here
-    var page2 = "";
-    page2 += ''
 
-var page = "";
-    page += "<p>" + num + "<br/>" + memCount + "<br/>" + maxDepth +  "<br/>" + avgDepth + "<br/>"  +"</p>";
-    res.send(page2);
-
-
+	// Page to send to the client
+    var page = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n" +
+    "<script src=\"https://code.jquery.com/jquery-1.11.0.min.js\"></script>\n" +
+    "<script src=\"https://code.highcharts.com/highcharts.js\"></script>\n" +
+    "<script src=\"https://code.highcharts.com/modules/drilldown.js\"></script>\n" +
+    "<style>\n" +
+		".toolbar{ padding: 20px;}\n" +
+		"body{ padding: 20px;}\n" +
+		".btn{ background-color: #0078e7; color: white; border: 0 none rgba(0, 0, 0, 0); border-radius: 2px; padding: 5px;}\n" +
+		"@media print { .no-print, .no-print * { display: none !important;}}\n" +
+    "</style>\n" +
+    "</head>\n" +
+    "<body style=\"height:100%;\">\n" +
+    "<div class=\"no-print\"><input class=\"btn\" type=\"button\" value=\"print\" id=\"printCommand\"></div>\n" + 
+	"<div id=\"container\" style=\"min-width: 310px; height: 400px; margin: 0 auto;\"></div>\n" +
+	"<script>\n" +
+	"$(function() {" + 
+	"$(\"#printCommand\").click(function() {" +
+            "$(\"#container\").find(\".highcharts-button\").hide();\n" +
+            "var printTemplate = {content: $(\"#container\").html(), recipe: \"phantom-pdf\", phantom: { printDelay: 1000}};\n" +
+            "jsreport.render(printTemplate);\n" +
+            "$(\"#container\").find(\".highcharts-button\").show();\n" +
+    "});\n" +
+    "function toJSON(data) { return JSON.stringify(data);}\n" + 
+    "$(\"#container\").highcharts({chart: {type: \"column\"}, title: {text: \"Thread Statistics\"}, " +
+    "xAxis: {type: \"category\"}, legend: {enabled: false}, plotOptions: { series: { borderWidth: 0, dataLabels: { enabled: true}}}, " +
+    "series: [{name: \"Thread statistics\", colorByPoint: true," +
+    "data: [{ name: \"Entries\", y: " + num + "}, { name: \"Member Count\", y: " + memCount +"}, { name: \"Maximum Depth\", y: " + maxDepth + "}, { name: \"Average Depth\", y: " + avgDepth + "}]}]" +
+    "});});\n</script>\n</body>\n</html>";
+    
+    res.send(page);
 });
 
 /**
