@@ -4,10 +4,10 @@
  *
  */
 
-var reporting = require('Reporting');
-var resources = require('Resources');
-var status = require('Status');
-var threads = require('Threads');
+var reporting = require('reporting');
+var resources = require('resources');
+var status = require('status');
+var threads = require('threads');
 
 //Reporting
 
@@ -138,27 +138,40 @@ function modifyResourceType()
 }
 
 // Status
+
 /**
  * variable used to set the status calculator if the NumPostAssessor is to be used
  **/
+
 var numPostsCalc = new status.statusCalculatorRequest();
+
 numPostsCalc.ProfileAssessor = status.NumPostsAssessor;
+
 /**
  * variable used to set the status calculator if the ThreadDepthAssessor is to be used
  **/
+
 var treeDepthCalc = new status.statusCalculatorRequest();
+
 treeDepthCalc.ProfileAssessor = status.ThreadsDepthAssessor;
 /**
  * variable used to do the status calculations
  **/
+
 var statusCalc = new status.statusCalculatorRequest();
+
 statusCalc.ProfileAssessor = status.NumPostsAssessor;
+
 /**
  * Functions needed to access the DB
  **/
+
 var Threads = require('./models/thread');
+
 var Users = require('./models/user');
+
 var Posts = require('./models/post');
+
 /**
  * Create an appraisal.
  * @param {String} appraisalName - the name of the appraisal
@@ -306,7 +319,7 @@ function updateProfile(user)
  */
 function createThread(title, content)
 {
-  var t = new Threads(0, "Frikkie", 0, 0, "Question", title, content, "Yesterday", "Text");
+  //var t = new Threads(0, "Frikkie", 0, 0, "Question", title, content, "Yesterday", "Text");
   console.log("Content: Thread created.");
 }
 
