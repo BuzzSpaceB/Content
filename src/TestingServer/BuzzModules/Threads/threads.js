@@ -76,14 +76,6 @@ module.exports = function(mID, mUser, mParent, mLevel, mPostType, mHeading, mCon
 			require('./Persistence.js').doPersistence(Schema, mongoose, mPostType, mHeading, mContent, mMimeType, mUser, mParent, mLevel, this.mPost, this.mStatus, this.mChildren);
 		},
 
-		ThreadSummary: function(_MimeType, _Content, _DateTime, _Thread)
-		{
-			this.mMimeType = _MimeType;
-			this.mContent = _Content;
-			this.mDateTime = _DateTime;
-			this.mThread = _Thread;
-		},
-
 		// Post: function(_ID, _PostType, _Heading, _Content, _DateTime, _MimeType)
 		// {
 		//     *
