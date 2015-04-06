@@ -59,9 +59,16 @@ function exportThread(threadObject, dir, filename)
 	reporting.exportThread(threadObject, dir, filename);
 }
 
-function importThread(dir, filename, callback)
+function importThread(dir, filename)
 {
-	reporting.importThread(dir, filename, callback);
+	var result;
+	
+	reporting.importThread(dir, filename, function(res)
+	{
+		result = res;
+	});
+	
+	return result;
 }
 
 // Resources
