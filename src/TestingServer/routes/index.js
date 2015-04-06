@@ -4,7 +4,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var ResourcesModel = require('../BuzzModules/Resources/models/Resources');
 var ResourceController = require('../BuzzModules/Resources/controllers/Resources');
-var Threads = require('../BuzzModules/Threads/threads');
+var Threads = require('../BuzzModules/Threads/threads.js');
 var Status = require('../BuzzModules/Status/StatusFunctions.js');
 // var async = require('async');
 // var Reporting = require('../BuzzModules/Reporting/ReportingB');
@@ -155,17 +155,20 @@ router.post('/createApprasial', function(request, response, next)
 
 router.post('/createThread', function(req,res,next) 
 {
-	res.location("/createThread");
-  res.redirect("/createThread"); 	
+	res.location("/viewThread");
+  res.redirect("/viewThread"); 	
 });
 
-router.get('/createThread', function(req,res,next){
+var index = 0;
+
+router.get('/viewThread', function(req,res,next){
   //              _ID, _User, _Parent, _Level, _PostType, _Heading, _Content, _DateTime, _MimeType
   var date = new Date();
   var t;
-  t = Threads(0, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
+  t = Threads(index, "Jason", 0, 0, "Question", req.query.threadTitle, req.query.threadContent, date, "Text");
   t.create();
-  res.send(generateThreadCreatedPage(t));
+  index += 1;
+  res.send(t);
 });
 
 function generateThreadCreatedPage(t){
