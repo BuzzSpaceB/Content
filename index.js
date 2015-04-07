@@ -1,7 +1,11 @@
-/**
+/*
  * Contents module for D3
- *
- *
+ * 
+ * Contributors: Daniel Christopher Alves Araujo	u13073878@tuks.co.za
+ * 				 Isabel Nel							isabel.nel.isabel@gmail.com
+ * 				 Elzahn Botha						elzahnbotha@gmail.com
+ * 				 Frikkie Snyman						frikkie.snyman@live.co.za
+ * 
  */
 
 var reporting = require('Reporting');
@@ -11,6 +15,10 @@ var threads = require('Threads');
 
 //Reporting
 
+/**
+ * Create an report by getting the thread stats.
+ * @returns {object}
+ */
 function createReport()
 {
     var numEntries = getThreadStats(posts, "Num");
@@ -27,6 +35,12 @@ function createReport()
     return returnStats;
 }
 
+/**
+ * Gets a thread's statistics
+ * @param {object} posts - Posts in a thread
+ * @param {string} action - The statistic to get
+ * @returns {number}
+ */
 function getThreadStats(posts, action)
 {
 	var result;
@@ -71,37 +85,44 @@ function importThread(dir, filename)
 	return result;
 }
 
-// Resources
+/*
+ * 
+ * Resources
+ *  
+ */
 
 /**
  * Upload a resource to the database
- * @param {Object} resource - the file to be uploaded
- * @param {String} description - a description of the file
+ * @param {object} resource - the file to be uploaded
+ * @param {string} description - a description of the file
  */
 function uploadResources(resource, description)
 {
   resources.uploadResource(resource, description);
+  
   console.log("Content: Resource uploaded.");
 }
 
 /**
  * Remove a resource to the database
- * @param {String} resourceId - ID of the resource to remove
+ * @param {string} resourceId - ID of the resource to remove
  */
 function removeResources(resourceId)
 {
   resources.removeResource(resourceId);
+  
   console.log("Content: Resource removed.")
 }
 
 /**
  * Retrieve a resource from the database
- *
+ * @param {string} resourceName - Name of the resource to get
  *
  */
 function getResource(resourceName)
 {
   resources.downloadResource(resourceName);
+  
   console.log("Content: Resource "  + resourceName + " retrieved");
 }
 
@@ -139,37 +160,35 @@ function modifyResourceType()
 
 // Status
 
-/**
+/*
  * variable used to set the status calculator if the NumPostAssessor is to be used
- **/
-
+ */
+ 
 var numPostsCalc = new status.statusCalculatorRequest();
 
 numPostsCalc.ProfileAssessor = status.NumPostsAssessor;
 
-/**
+/*
  * variable used to set the status calculator if the ThreadDepthAssessor is to be used
- **/
+ */
 
 var treeDepthCalc = new status.statusCalculatorRequest();
 
 treeDepthCalc.ProfileAssessor = status.ThreadsDepthAssessor;
-/**
- * variable used to do the status calculations
- **/
 
+/*
+ * variable used to do the status calculations
+ */
 var statusCalc = new status.statusCalculatorRequest();
 
 statusCalc.ProfileAssessor = status.NumPostsAssessor;
 
-/**
+/*
  * Functions needed to access the DB
- **/
+ */
 
 var Threads = require('./models/thread');
-
 var Users = require('./models/user');
-
 var Posts = require('./models/post');
 
 /**
@@ -312,15 +331,28 @@ function updateProfile(user)
 
 // Threads
 
+
+var threadID = 0; 
+
 /**
  * Create a new thread
- * @param {String} title -
- * @param {String} content -
+ * 
+ * @param {String} user - The user creating a new thread
+ * @param {String} title - The title of the thread
+ * @param {String} content - The content of the first post
+ * @param {String} postType - The type of post being submitted
+ * 
  */
-function createThread(title, content)
+function createNewThread(user, title, content, postType)
 {
-  //var t = new Threads(0, "Frikkie", 0, 0, "Question", title, content, "Yesterday", "Text");
+  var dateTime = new Date(); //Get the current date and time to store in the thread object
+  var LEVEL = 0; // Default level value of 0
+  var PARENT = 0; // Default parent value of 0
+  var newThread = threads(threadID, user, PARENT, LEVEL, postType, title, content, dateTime, "text/plain");
+  threadID += 1;
   console.log("Content: Thread created.");
+  
+  return newThread;
 }
 
 
@@ -381,4 +413,4 @@ module.exports.updateProfile = updateProfile;
 
 // Threads
 
-module.exports.createThread = createThread;
+module.exports.createNewThread = createNewThread;
