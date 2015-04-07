@@ -4,10 +4,10 @@
  *
  */
 
-var reporting = require('reporting');
-var resources = require('resources');
-var status = require('status');
-var threads = require('threads');
+var reporting = require('Reporting');
+var resources = require('Resources');
+var status = require('Status');
+var threads = require('Threads');
 
 //Reporting
 
