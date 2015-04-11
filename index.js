@@ -196,9 +196,9 @@ statusCalc.ProfileAssessor = status.NumPostsAssessor;
 /*
  * Functions needed to access the DB
  */
-var Threads = require('./models/thread');
-var Users = require('./models/user');
-var Posts = require('./models/post');
+var Threads = require('./node_modules/Status/models/thread');
+var Users = require('./node_modules/Status/models/user');
+var Posts = require('./node_modules/Status/models/post');
 
 /**
  * Create an appraisal.
