@@ -484,7 +484,7 @@ function updateProfile(user, callback)
  * @param {String} title - The title of the thread
  * @param {String} content - The content of the first post
  * @param {String} postType - The type of post being submitted
- * 
+ * @param {Function} callback - Callback function
  */
 function createNewThread(threadID, user, title, content, postType, callback)
 {
@@ -492,7 +492,7 @@ function createNewThread(threadID, user, title, content, postType, callback)
   var LEVEL = 0; // Default level value of 0
   var PARENT = 0; // Default parent value of 0
   var newThread = new threads(threadID, user, PARENT, LEVEL, postType, title, content, dateTime, "text/plain");
- 
+  newThread.create();
   console.log("Content: Thread created.");
    
   callback(newThread);
