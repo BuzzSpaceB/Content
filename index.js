@@ -479,25 +479,236 @@ function updateProfile(user, callback)
 
 /**
  * Create a new thread
- * 
  * @param {String} user - The user creating a new thread
  * @param {String} title - The title of the thread
  * @param {String} content - The content of the first post
  * @param {String} postType - The type of post being submitted
+ * @param {String} subject - The subject of the post
  * @param {Function} callback - Callback function
  */
-function createNewThread(threadID, user, title, content, postType, callback)
+function createNewThread(user, title, content, postType, subject, callback)
 {
   var dateTime = new Date(); //Get the current date and time to store in the thread object
   var LEVEL = 0; // Default level value of 0
-  var PARENT = 0; // Default parent value of 0
-  var newThread = new threads(threadID, user, PARENT, LEVEL, postType, title, content, dateTime, "text/plain");
-  newThread.create();
+  var PARENT = null; // Default parent value of null
+  var MIMETYPE = "text/plain";
+  var newThread = new threads(user, PARENT, LEVEL, postType, title, content, MIMETYPE, subject);
+  newThread.createNewThread();
   console.log("Content: Thread created.");
    
   callback(newThread);
 }
 
+/**
+ * Submit a new post to a thread
+ * @param {object} threadObject - A thread to submit post to
+ * @param {number} id - The id of the post
+ * @param {String} user - The user creating a new post
+ * @param {String} postType - The type of post being submitted
+ * @param {String} heading - Heading of the post
+ * @param {String} content - The content of the first post
+ * @param {Function} callback - Callback function
+ */
+function newPost(threadObject, id, user, postType, heading, content, callback)
+{
+	var MIMETYPE = "text/plain";
+	
+	threadObject.submitPost(id, user, postType, heading, content, MIMETYPE);
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Close the thread
+ * @param {object} threadObject - A thread to close
+ * @param {Function} callback - Callback function
+ */
+function closeThread(threadObject, callback)
+{
+	threadObject.closeThread();
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Close the thread
+ * @param {object} threadObject - A thread to unfreeze
+ * @param {Function} callback - Callback function
+ */
+function unfreezeThread(threadObject, callback)
+{
+	threadObject.unfreeze();
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+
+/*
+ * Accessor functions
+ */ 
+
+/**
+ * Accessor to get status from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getStatusFromThread(threadObject, callback)
+{
+	var result = threadObject.getStatus();
+	
+	console.log("Content: Got status from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the children from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getChildrenFromThread(threadObject, callback)
+{
+	var result = threadObject.getChildren();
+	
+	console.log("Content: Got children from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the post type from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getPostTypeFromThread(threadObject, callback)
+{
+	var result = threadObject.getStatus();
+	
+	console.log("Content: Got post type from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the heading from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getHeadingFromThread(threadObject, callback)
+{
+	var result = threadObject.getHeading();
+	
+	console.log("Content: Got heading from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the content from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getContentFromThread(threadObject, callback)
+{
+	var result = threadObject.getContent();
+	
+	console.log("Content: Got content from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the date-time from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getDateTimeFromThread(threadObject, callback)
+{
+	var result = threadObject.getDateTime();
+	
+	console.log("Content: Got datetime from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the MIME type from a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getMIMETypeFromThread(threadObject, callback)
+{
+	var result = threadObject.getMimeType();
+	
+	console.log("Content: Got MIMEType from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the children of a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getChildThreadsFromThread(threadObject, callback)
+{
+	var result = threadObject.getChildThreads();
+	
+	console.log("Content: Got child threads from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the post of a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getPostFromThread(threadObject, callback)
+{
+	var result = threadObject.getPost();
+	
+	console.log("Content: Got post from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the parent of a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getParentFromThread(threadObject, callback)
+{
+	var result = threadObject.getParentThread();
+	
+	console.log("Content: Got parent thread from a thread");
+	
+	callback(result);
+}
+
+/**
+ * Accessor to get the root of a thread
+ * @param {object} threadObject - A thread to aquire details from
+ * @param {Function} callback - Callback function
+ */
+function getRootFromThread(threadObject, callback)
+{
+	var result = threadObject.getRoot();
+	
+	console.log("Content: Got root from a thread");
+	
+	callback(result);
+}
 
 /////////////////////////////////////////////
 /*
@@ -563,3 +774,32 @@ module.exports.updateProfile = updateProfile;
 // Threads
 
 module.exports.createNewThread = createNewThread;
+
+module.exports.newPost = newPost;
+
+module.exports.closeThread = closeThread;
+
+module.exports.unfreezeThread = unfreezeThread;
+
+module.exports.getStatusFromThread = getStatusFromThread;
+
+module.exports.getChildrenFromThread = getChildrenFromThread;
+
+module.exports.getPostTypeFromThread = getPostTypeFromThread;
+
+module.exports.getHeadingFromThread = getHeadingFromThread;
+
+module.exports.getContentFromThread = getContentFromThread;
+
+module.exports.getDateTimeFromThread = getDateTimeFromThread;
+
+module.exports.getMIMETypeFromThread = getMIMETypeFromThread;
+
+module.exports.getChildThreadsFromThread = getChildThreadsFromThread;
+
+module.exports.getPostFromThread = getPostFromThread;
+
+module.exports.getParentFromThread = getParentFromThread;
+
+module.exports.getRootFromThread = getRootFromThread;
+
