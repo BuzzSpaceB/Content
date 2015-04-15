@@ -12,6 +12,9 @@ var reporting = require('Reporting');
 var resources = require('Resources');
 var status = require('Status');
 var threads = require('Threads');
+var mongoose = require('mongoose'), ds = require('DatabaseStuff');
+
+ds.init(mongoose);
 
 /*
  * 
@@ -186,12 +189,12 @@ function uploadResources(resource, description, callback)
 
 /**
  * Remove a resource to the database
- * @param {string} resourceId - ID of the resource to remove
+ * @param {string} url - url of the resource to remove
  * @param {Function} callback - Callback funcion
  */
-function removeResources(resourceId, callback)
+function removeResources(url, callback)
 {
-  resources.removeResource(resourceId);
+  resources.removeResource(url);
   
   console.log("Content: Resource removed.");
   
@@ -289,9 +292,13 @@ statusCalc.ProfileAssessor = status.NumPostsAssessor;
 /*
  * Functions needed to access the DB
  */
-var Threads = require('./node_modules/Status/models/thread');
-var Users = require('./node_modules/Status/models/user');
-var Posts = require('./node_modules/Status/models/post');
+//var Threads = require('./node_modules/Status/models/thread');
+//var Users = require('./node_modules/Status/models/user');
+//var Posts = require('./node_modules/Status/models/post');
+
+var Threads = ds.models.thread;
+var Users = ds.models.user;
+var Posts = ds.models.post;
 
 /**
  * Create an appraisal.
