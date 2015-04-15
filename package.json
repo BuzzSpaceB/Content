@@ -36,7 +36,7 @@
       "reporting": "git://github.com/BuzzSpaceB/Reporting#master",
       "threads": "git://github.com/BuzzSpaceB/Threads#master",
       "DatabaseStuff": "git://github.com/BuzzSpaceB/DatabaseStuff#master",
-      "mongoose": "^3.8.25",
+      "mongoose": "^4.0.1",
       "electrolyte": "0.0.6"
     }
 }
