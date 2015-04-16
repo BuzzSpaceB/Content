@@ -28,21 +28,57 @@ ds.init(mongoose);
  * Create a report by getting the thread stats.
  * @param {Function} callback - Callback function
  * @returns {object}
+ * @throw callbackNotDefined
  */
 function createReport(callback)
 {
-    var numEntries = getThreadStats(posts, "Num");
-    var memCount = getThreadStats(posts, "MemCount");
-    var maxDepth = getThreadStats(posts, "MaxDepth");
-    var avgDepth = getThreadStats(posts, "AvgDepth");
+    var numEntries;
+    var memCount;
+    var maxDepth;
+    var avgDepth;
+    
+    try
+    {
+		getThreadStats(posts, "Num", function(result)
+		{
+			numEntries = result;
+		});
+		
+		getThreadStats(posts, "MemCount", function(result)
+		{
+			memCount = result;
+		});
+		
+		getThreadStats(posts, "MaxDepth", function(result)
+		{
+			maxDepth = result;
+		});	
+		
+		getThreadStats(posts, "AvgDepth", function(result)
+		{
+			avgDepth = result;
+		});	
+	}
+	catch(err)
+	{
+		console.log(err);
+	}
     
     var returnStats = {};
+    
     returnStats.entriesCount = numEntries;
     returnStats.memberCount = memCount;
     returnStats.maximumDepth = maxDepth;
     returnStats.averageDepth = avgDepth;
     
-    callback(returnStats);
+    if(typeof callback !== 'undefined')
+	{
+		callback(returnStats);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 /**
@@ -51,6 +87,7 @@ function createReport(callback)
  * @param {string} action - The statistic to get
  * @param {Function} callback - Callback function
  * @returns {number}
+ * @throw callbackNotDefined
  */
 function getThreadStats(posts, action, callback)
 {
@@ -63,7 +100,14 @@ function getThreadStats(posts, action, callback)
 	
 	console.log("Content: Reporting -- Thread stats.");
 	
-	callback(result);
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 /**
@@ -79,11 +123,6 @@ function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKey
 	reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback);
 	
 	console.log("Content: Reporting -- Getting thread appraisal.");
-	
-	if(typeof callback !== 'undefined')
-	{
-		callback();
-	}
 }
 
 /**
@@ -147,6 +186,7 @@ function exportThread(threadObject, dir, filename, callback)
  * @param {string} dir - Directory to export to
  * @param {string} filename - the name of the file
  * @param {Function} callback - Callback function
+ * @throw callbackNotDefined
  */
 function importThread(dir, filename, callback)
 {
@@ -159,7 +199,14 @@ function importThread(dir, filename, callback)
 	
 	console.log("Content: Reporting -- importing thread appraisal.");
 	
-	callback(result);
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 
@@ -247,8 +294,8 @@ function addResourceType(resourceType, maxSize, callback)
  */
 function removeResourceType(resourceType, callback)
 {
-  resources.removeResourceType(resourceType);
-  console.log("Content: Resource type removed.");
+	resources.removeResourceType(resourceType);
+	console.log("Content: Resource type removed.");
   
   	if(typeof callback !== 'undefined')
 	{
@@ -562,6 +609,7 @@ function unfreezeThread(threadObject, callback)
  * Create summary of the thread
  * @param {object} threadObject - A thread to create a summary from
  * @param {Function} callback - Callback function
+ * @throw callbackNotDefined
  */
 function createThreadSummary(threadObject, callback)
 {
@@ -569,7 +617,14 @@ function createThreadSummary(threadObject, callback)
 	
 	console.log("Content: Creating thread summary");
 	
-	callback(result);
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 /**
@@ -609,6 +664,7 @@ function setThreadLevels(threadObject, callback)
  * @param {object} threadObject - Thread to be moved
  * @param {object} newParent - New thread to set as parent
  * @param {Function} callback - Callback function
+ * @throw callbackNotDefined
  */
 function moveThread(threadObject, newParent, callback)
 {
@@ -625,7 +681,14 @@ function moveThread(threadObject, newParent, callback)
 		console.log("Content: Moving thread was not successful.");
 	}
 	
-	callback(result);
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 /**
@@ -638,6 +701,7 @@ function moveThread(threadObject, newParent, callback)
  * @param {number} userGroup - The usergroup to restrict results to.
  * @param {number} phraseSet - Set of strings to restrict posts with only those strings. All posts returned if empty.
  * @param {Function} callback - Callback function
+ * @throw callbackNotDefined
  */
 function queryThread(threadObject, startDate, endDate, minLevel, maxLevel, userGroup, phraseSet, callback)
 {
@@ -645,7 +709,14 @@ function queryThread(threadObject, startDate, endDate, minLevel, maxLevel, userG
 	
 	console.log("Content: Querying thread.");
 	
-	callback(result);
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
 }
 
 /**
@@ -705,7 +776,7 @@ function markPostInThreadAsRead(threadObject, callback)
  * @param {number} userID - User of to be marked as read
  * @param {number} postID - ID of post to be marked
  * @param {Function} callback - Callback function
- * @throws Throw exception if callback function does not exist
+ * @throws callbackNotDefined
  */
 function readPost(threadObject, userID, postID, callback)
 {
@@ -726,7 +797,7 @@ function readPost(threadObject, userID, postID, callback)
  * Count descendants of a thread
  * @param {object} threadObject - Thread whose descendants are to be counted
  * @param {Function} callback - Callback function
- * @throws Throw exception if callback function does not exist
+ * @throws callbackNotDefined
  */
 function countDescendants(threadObject, callback)
 {
@@ -785,7 +856,7 @@ function reopenThread(threadObject, callback)
  * @param {object} threadObject - Reference for calling thread
  * @param {object} validThread - Threads to be generated from this thread
  * @param {Function} callback - Callback function
- * @throws Throw exception if callback function does not exist
+ * @throws callbackNotDefined
  */
 function generateThreads(threadObject, validThread, callback)
 {
