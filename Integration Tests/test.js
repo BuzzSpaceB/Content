@@ -61,3 +61,35 @@ exports.testNewPost = function(test){
 	test.equal(count,0);
 	test.done();
 }
+
+// exports.testCloseThread = function(test){
+// 	console.log("Running test for submitting a new post");
+// 	test.expect(1);
+// 	var obj;
+// 	content.createNewThread("Frikkie3","This is the test of adding a post to a thread","This is the content of the original","Question", function(res){
+// 		obj = res;
+// 	});
+// 	content.closeThread(obj,function(){});
+// 	content.showThread(obj,function(){});
+
+
+
+// }
+
+exports.testGetHeading = function(test){
+	console.log("Running test for getting a heading");
+	test.expect(1);
+
+	var obj;
+	content.createNewThread("Frikkie3","This is the test of adding a post to a thread","This is the content of the original","Question", function(res){
+		obj = res;
+	});
+
+	var head;
+
+	content.getHeadingFromThread(obj,function(res){
+		head = res;
+	})
+	test.equal(head,"This is the test of creating a thread2");
+	test.done();
+}
