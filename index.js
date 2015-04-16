@@ -236,7 +236,14 @@ function uploadResources(resource, description, callback)
 		console.log(err);
 	}
 	
-	console.log("Content: Resource uploaded.");
+	if(result == true)
+	{
+		console.log("Content: Resource uploaded.");
+	}
+	else
+	{
+		console.log("Content: Resource could not be uploaded.");
+	}
   
 	if(typeof callback !== 'undefined')
 	{
@@ -257,7 +264,14 @@ function removeResources(url, callback)
 {
 	var result = resources.removeResource(url);
 	
-	console.log("Content: Resource removed.");
+	if(result == true)
+	{
+		console.log("Content: Resource removed.");
+	}
+	else
+	{
+		console.log("Content: Resource could not be removed.");
+	}
   
 	if(typeof callback !== 'undefined')
 	{
@@ -276,9 +290,9 @@ function removeResources(url, callback)
  */
 function getResource(resourceName, callback)
 {
-  resources.downloadResource(resourceName);
+	resources.downloadResource(resourceName);
   
-  console.log("Content: Resource "  + resourceName + " retrieved");
+	console.log("Content: Resource "  + resourceName + " retrieved");
   
 	if(typeof callback !== 'undefined')
 	{
