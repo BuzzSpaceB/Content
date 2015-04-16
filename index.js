@@ -225,13 +225,33 @@ function importThread(dir, filename, callback)
  */
 function uploadResources(resource, description, callback)
 {
-	resources.uploadResource(resource, description);
+	var result;
 	
-	console.log("Content: Resource uploaded.");
+	try
+	{
+		result = resources.uploadResource(resource, description);
+	}
+	catch(err)
+	{
+		throw err;
+	}
+	
+	if(result == true)
+	{
+		console.log("Content: Resource uploaded.");
+	}
+	else
+	{
+		console.log("Content: Resource could not be uploaded.");
+	}
   
 	if(typeof callback !== 'undefined')
 	{
-		callback();
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
 	}
 }
 
@@ -242,13 +262,24 @@ function uploadResources(resource, description, callback)
  */
 function removeResources(url, callback)
 {
-  resources.removeResource(url);
-  
-  console.log("Content: Resource removed.");
+	var result = resources.removeResource(url);
+	
+	if(result == true)
+	{
+		console.log("Content: Resource removed.");
+	}
+	else
+	{
+		console.log("Content: Resource could not be removed.");
+	}
   
 	if(typeof callback !== 'undefined')
 	{
-		callback();
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
 	}
 }
 
@@ -259,9 +290,9 @@ function removeResources(url, callback)
  */
 function getResource(resourceName, callback)
 {
-  resources.downloadResource(resourceName);
+	resources.downloadResource(resourceName);
   
-  console.log("Content: Resource "  + resourceName + " retrieved");
+	console.log("Content: Resource "  + resourceName + " retrieved");
   
 	if(typeof callback !== 'undefined')
 	{
@@ -294,29 +325,53 @@ function addResourceType(resourceType, maxSize, callback)
  */
 function removeResourceType(resourceType, callback)
 {
-	resources.removeResourceType(resourceType);
-	console.log("Content: Resource type removed.");
+	var result = resources.removeResourceType(resourceType);
+	
+	if(result == true)
+	{
+		console.log("Content: Resource type removed.");
+	}
+	else
+	{
+		console.log("Content: Resource type could not be removed.");
+	}
   
   	if(typeof callback !== 'undefined')
 	{
-		callback();
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
 	}
 }
 
 /**
  * Modify an existing resource type
  * @param {string} resourceType - The type of resource to modify
+ * @param {Number} newSize - The new size of the resource type
  * @param {Function} callback - Callback function
  */
-function modifyResourceType(resourceType, callback)
+function modifyResourceType(resourceType, newSize, callback)
 {
-	// Not yet developed
+	var result = resources.modifyResourceType(resourceType, newSize);
 	
-	console.log("(TODO)Content: Resource modified.");
+	if(result == true)
+	{
+		console.log("Content: Resource modified.");
+	}
+	else
+	{
+		console.log("Content: Resource could not be modified.");
+	}
 	
 	if(typeof callback !== 'undefined')
 	{
-		callback();
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
 	}
 }
 
