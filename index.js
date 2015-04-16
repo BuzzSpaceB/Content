@@ -547,7 +547,9 @@ function createNewThread(user, heading, content, postType, callback)
   var PARENT = null; // Default parent value of null
   var MIMETYPE = "text/plain";
   var newThread = new threads();
-  newThread.create(user, PARENT, postType, heading, content, MIMETYPE);
+  newThread.create(user, PARENT, postType, heading, content, MIMETYPE,function(res){
+  	newThread = res;
+  });
   console.log("Content: Thread created.");
    
   callback(newThread);
@@ -815,7 +817,7 @@ function countDescendants(threadObject, callback)
 	}
 }
 /**
- * Function to set a post as read
+ * Function to count the number of children a thread has
  * @param {object} threadObject - Reference for calling
  * @param {object} threadToCountChildren - Count children from of this thread
  * @param {Function} callback - Callback function
