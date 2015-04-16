@@ -547,7 +547,7 @@ function createNewThread(user, heading, content, postType, callback)
   var PARENT = null; // Default parent value of null
   var MIMETYPE = "text/plain";
   var newThread = new threads();
-  newThread.create(user, PARENT, postType, title, content, MIMETYPE);
+  newThread.create(user, PARENT, postType, heading, content, MIMETYPE);
   console.log("Content: Thread created.");
    
   callback(newThread);

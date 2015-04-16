@@ -1,4 +1,4 @@
-var content = require('../Content');
+var content = require('../index.js');
 
 // Install via npm: npm install nodeunit -g
 
@@ -19,3 +19,21 @@ var content = require('../Content');
 // };
 
 // View https://github.com/caolan/nodeunit for usage please
+
+exports.testThreadCreation = function(test){
+	var obj;
+	test.expect(1);
+	content.createNewThread("Frikkie","This is the test of creating a thread","This is the content of the test thread so this bla","text", function(res){
+		obj = res;
+	});
+
+	var head;
+
+	content.getHeadingFromThread(obj,function(res){
+		head = res;
+	});
+
+	test.equal(head,"This is the test of creating a thread");
+	test.done();
+
+}
