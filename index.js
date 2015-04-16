@@ -236,9 +236,9 @@ function uploadResources(resource, description, callback)
 		throw err;
 	}
 	
-	if(result == true)
+	if(result)
 	{
-		console.log("Content: Resource uploaded.");
+		console.log("Content: Resource uploaded. URL: " + result.url);
 	}
 	else
 	{
@@ -264,7 +264,7 @@ function removeResources(url, callback)
 {
 	var result = resources.removeResource(url);
 	
-	if(result == true)
+	if(result)
 	{
 		console.log("Content: Resource removed.");
 	}
@@ -327,7 +327,7 @@ function removeResourceType(resourceType, callback)
 {
 	var result = resources.removeResourceType(resourceType);
 	
-	if(result == true)
+	if(result)
 	{
 		console.log("Content: Resource type removed.");
 	}
@@ -356,7 +356,7 @@ function modifyResourceType(resourceType, newSize, callback)
 {
 	var result = resources.modifyResourceType(resourceType, newSize);
 	
-	if(result == true)
+	if(result)
 	{
 		console.log("Content: Resource modified.");
 	}

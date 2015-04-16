@@ -2,6 +2,8 @@ var content = require('../index.js');
 var fs = require("fs");
 var path = require('path');
 
+var exampleResourceID;
+
 exports.testResourceUpload = function(test)
 {
 	// Test uploading with callback
@@ -10,7 +12,7 @@ exports.testResourceUpload = function(test)
 	{
 		if(errorRes)
 		{
-			console.log(errorRes)
+			test.ok(false, "Upload unsuccessful");
 		}
 		else
 		{
@@ -22,7 +24,8 @@ exports.testResourceUpload = function(test)
 				fileUploadSuccessful = res;
 			});
 			
-			test.ok(fileUploadSuccessful, "File upload");
+			exampleResourceID = fileUploadSuccessful._id;
+			//test.ok(fileUploadSuccessful, "Upload unsuccessful");
 		}
 	});
 	
@@ -32,7 +35,7 @@ exports.testResourceUpload = function(test)
 	{
 		if(errorRes)
 		{
-			console.log(errorRes)
+			test.ok(false, "Upload unsuccessful");
 		}
 		else
 		{		
@@ -49,6 +52,38 @@ exports.testResourceUpload = function(test)
 	test.done();
 }
 
+exports.testAddingResourceType = function(test)
+{	
+	content.addResourceType("application/pdf", 10000, function(res)
+	{
+		console.log("Content Testing: Testing for adding a resource type.");
+	});
+	
+	test.done();
+}
+
+exports.testRemovalResource = function(test)
+{
+	var successfulRemoval;
+
+	if(typeof exampleResourceID != 'undefined')
+	{
+		content.removeResource(exampleResourceID, function(res)
+		{
+			successfulRemoval = res;
+		});
+	}
+	else
+	{
+		successfulRemoval = false;
+	}
+	
+	test.ok(successfulRemoval, "Unable to remove resource");
+	
+	test.done();
+}
+
+
 exports.testGettingResource = function(test)
 {
 	var acquiredResource;
@@ -57,7 +92,7 @@ exports.testGettingResource = function(test)
 		acquiredResource = res;
 	});
 	
-	test.ok(acquiredResource, "Resource aquired");
+	test.ok(acquiredResource, "Resource could not be aquired");
 	
 	test.throws(
 		function ()
@@ -71,12 +106,16 @@ exports.testGettingResource = function(test)
 	test.done();
 }
 
-exports.testAddingAResourceType = function(test)
-{	
-	content.addResourceType("application/pdf", 10000, function(res)
+exports.testModifyingResourceType = function(test)
+{
+	var successfulModification;
+	
+	content.modifyResourceType("text/plain", 2000, function(res)
 	{
-		console.log("Content Testing: Testing for adding a resource type.");
+		successfulModification = res;	
 	});
+	
+	test.ok(successfulModification, "Modification of resource type");
 	
 	test.done();
 }
@@ -90,7 +129,7 @@ exports.removeResourceType = function(test)
 		successfulRemoval = res;
 	});
 	
-	test.ok(successfulRemoval, "Removal of Resource");
+	test.ok(successfulRemoval, "Could not remove resource type");
 	
 	test.done();
 }
