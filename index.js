@@ -623,10 +623,10 @@ function newPost(threadObject, id, user, postType, heading, content, callback)
 	var MIMETYPE = "text/plain";
 	
 	threadObject.submitPost(id, user, postType, heading, content, MIMETYPE);
+	console.log("Content: New post");
 	
 	if(typeof callback !== 'undefined')
 	{
-		console.log("Callback defined");
 		callback();
 	}
 }
