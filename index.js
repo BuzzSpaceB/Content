@@ -16,7 +16,7 @@ var mongoose = require('mongoose'), ds = require('DatabaseStuff');
 
 var callbackNotDefined = "Content Exception: Callback function was not defined."
 
-ds.init(mongoose);
+//ds.init(mongoose);
 
 /*
  * 
