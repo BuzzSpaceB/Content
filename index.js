@@ -620,6 +620,7 @@ function createNewThread(user, heading, content, postType, callback)
  */
 function newPost(threadObject, id, user, postType, heading, content, callback)
 {
+	//Not working as intended, due 
 	var MIMETYPE = "text/plain";
 	
 	threadObject.submitPost(id, user, postType, heading, content, MIMETYPE);

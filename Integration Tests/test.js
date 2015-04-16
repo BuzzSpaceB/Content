@@ -20,15 +20,12 @@ var content = require('../index.js');
 
 // View https://github.com/caolan/nodeunit for usage please
 
-var threadForTesting;
-
 exports.testThreadCreation = function(test){
 	console.log("Running test for the creation of a thread");
 	test.expect(1);
 	var obj;
 	content.createNewThread("Frikkie2","This is the test of creating a thread2","This is the content of the test thread so this bla2","Question", function(res){
 		obj = res;
-		threadForTesting = res;
 	});
 
 	var head;
@@ -41,6 +38,8 @@ exports.testThreadCreation = function(test){
 }
 
 exports.testNewPost = function(test){
+
+	//Not working as intended
 	console.log("Running test for submitting a new post");
 	test.expect(1);
 
