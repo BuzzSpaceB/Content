@@ -1063,3 +1063,17 @@ module.exports.moveThread = moveThread;
 module.exports.queryThread = queryThread;
 
 module.exports.hideThread = hideThread;
+
+module.exports.showThread = showThread;
+
+module.exports.markPostInThreadAsRead = markPostInThreadAsRead;
+
+module.exports.readPost = readPost;
+
+module.exports.countDescendants = countDescendants;
+
+module.exports.countChildren = countChildren;
+
+module.exports.reopenThread = reopenThread;
+
+module.exports.generateThreads = generateThreads;
