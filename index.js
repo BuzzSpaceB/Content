@@ -626,6 +626,7 @@ function newPost(threadObject, id, user, postType, heading, content, callback)
 	
 	if(typeof callback !== 'undefined')
 	{
+		console.log("Callback defined");
 		callback();
 	}
 }
