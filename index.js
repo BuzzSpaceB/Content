@@ -14,6 +14,8 @@ var status = require('Status');
 var threads = require('Threads');
 var mongoose = require('mongoose'), ds = require('DatabaseStuff');
 
+var callbackNotDefined = "Content Exception: Callback function was not defined."
+
 ds.init(mongoose);
 
 /*
@@ -487,20 +489,19 @@ function updateProfile(user, callback)
 /**
  * Create a new thread
  * @param {String} user - The user creating a new thread
- * @param {String} title - The title of the thread
+ * @param {String} heading - The head of the thread
  * @param {String} content - The content of the first post
  * @param {String} postType - The type of post being submitted
- * @param {String} subject - The subject of the post
  * @param {Function} callback - Callback function
  */
-function createNewThread(user, title, content, postType, subject, callback)
+function createNewThread(user, heading, content, postType, callback)
 {
   var dateTime = new Date(); //Get the current date and time to store in the thread object
-  var LEVEL = 0; // Default level value of 0
+  //var LEVEL = 0; // Default level value of 0
   var PARENT = null; // Default parent value of null
   var MIMETYPE = "text/plain";
-  var newThread = new threads(user, PARENT, LEVEL, postType, title, content, MIMETYPE, subject);
-  newThread.createNewThread();
+  var newThread = new threads();
+  newThread.create(user, PARENT, postType, title, content, MIMETYPE);
   console.log("Content: Thread created.");
    
   callback(newThread);
@@ -558,6 +559,226 @@ function unfreezeThread(threadObject, callback)
 	}
 }
 
+/**
+ * Create summary of the thread
+ * @param {object} threadObject - A thread to create a summary from
+ * @param {Function} callback - Callback function
+ */
+function createThreadSummary(threadObject, callback)
+{
+	var result = threadObject.createThreadSummary();
+	
+	console.log("Content: Creating thread summary");
+	
+	callback(result);
+}
+
+/**
+ * Create summary of the thread
+ * @param {object} threadObject - A thread to create a summary from
+ * @param {Function} callback - Callback function
+ */
+function closeThreadChildren(threadObject, callback)
+{
+	threadObject.closeChildren();
+	
+	console.log("Content: Closing children of thread");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Set levels of a thread
+ * @param {object} threadObject - A thread to set thread levels
+ * @param {Function} callback - Callback function
+ */
+function setThreadLevels(threadObject, callback)
+{
+	threadObject.setLevels();
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Set levels of a thread
+ * @param {object} threadObject - A thread to move thread
+ * @param {object} newParent - New thread to set as parent
+ * @param {Function} callback - Callback function
+ */
+function moveThread(threadObject, newParant, callback)
+{
+	var result = threadObject.moveThread(newParent);
+	
+	console.log("Content: Moving thread");
+	
+	if(result == true)
+	{
+		console.log("Content: Moving thread was successful.");
+	}
+	else
+	{
+		console.log("Content: Moving thread was not successful.");
+	}
+	
+	callback(result);
+}
+
+/**
+ * Query a thread
+ * @param {object} threadObject - A thread to move thread
+ * @param startDateTime - Starting time of thread. Default is the time stamp of the root.
+ * @param endDateTime - Ending time of the thread.
+ * @param maxLevel - The maximum level of depth to be returned.
+ * @param minLevel - The minimum level of depth to be returned.
+ * @param userGroup - The usergroup to restrict results to.
+ * @param phraseSet - Set of strings to restrict posts with only those strings. All posts returned if empty.
+ * @param {Function} callback - Callback function
+ */
+function queryThread(threadObject, startDate, endDate, minLevel, maxLevel, userGroup, phraseSet, callback)
+{
+	var result = threadObject.queryThread(startDate, endDate, maxLevel, minLevel, userGroup, phraseSet);
+	
+	console.log("Content: Querying thread.");
+	
+	callback(result);
+}
+
+/**
+ * Hide a thread
+ * @param {object} threadObject - A thread to hide
+ * @param {Function} callback - Callback function
+ */
+function hideThread(threadObject, callback)
+{
+	threadObject.hideThread();
+	
+	console.log("Content: Hiding thread.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Show a hidden thread
+ * @param {object} threadObject - A hidden thread to show
+ * @param {Function} callback - Callback function
+ */
+function showThread(threadObject, callback)
+{
+	threadObject.unhideThread();
+	
+	console.log("Content: Showing hidden thread.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Show a hidden thread
+ * @param {object} threadObject - A thread to mark post as read
+ * @param {Function} callback - Callback function
+ */
+function markPostInThreadAsRead(threadObject, callback)
+{
+	threadObject.markPostAsRead();
+	
+	console.log("Content: Marked post as read.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+/**
+ * Show a hidden thread
+ * @param {object} threadObject - A hidden thread to show
+ * @param {} userID - 
+ * @param {} postID -
+ * @param {Function} callback - Callback function
+ * @throws Throw exception if callback function does not exist
+ */
+function readPost(threadObject, userID, postID, callback)
+{
+	var result = threadObject.readPost(userID, postID);
+	
+	console.log("Content: Setting a post as read.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
+} 
+
+function countDescendants(threadObject, callback)
+{
+	var result = threadObject.countDescendants();
+	
+	console.log("Content: Counting descendants of the threads.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
+}
+
+function countChildren(threadObject, threadToCountChildren, callback)
+{
+	var result = threadObject.countChildren(threadToCountChildren);
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
+}
+
+function reopenThread(threadObject, callback)
+{
+	threadObject.reopenThread();
+	
+	console.log("Content: Reopening thread.");
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback();
+	}
+}
+
+function generateThreads(threadObject, validThread, callback)
+{
+	var result = threadObject.generateThreads(validThread);
+	
+	if(typeof callback !== 'undefined')
+	{
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
+	}
+}
 
 /*
  * Accessor functions
@@ -810,3 +1031,14 @@ module.exports.getParentFromThread = getParentFromThread;
 
 module.exports.getRootFromThread = getRootFromThread;
 
+module.exports.createThreadSummary = createThreadSummary;
+
+module.exports.closeThreadChildren = closeThreadChildren;
+
+module.exports.setThreadLevels = setThreadLevels;
+
+module.exports.moveThread = moveThread;
+
+module.exports.queryThread = queryThread;
+
+module.exports.hideThread = hideThread;
