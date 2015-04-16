@@ -73,7 +73,6 @@ function getThreadStats(posts, action, callback)
  * @param {} setOfAppraisals - 
  * @param {} actionKeyword - 
  * @param {Function} callback - Callback function
- * @returns {number}
  */
 function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback)
 {
@@ -266,7 +265,7 @@ function modifyResourceType(resourceType, callback)
 {
 	// Not yet developed
 	
-	console.log("Content: Resource modified.");
+	console.log("(TODO)Content: Resource modified.");
 	
 	if(typeof callback !== 'undefined')
 	{
@@ -402,7 +401,7 @@ function getStatus(userId, callback)
 }
 
 /**
- * sets The status calculator to the desired method of calculation
+ * Sets The status calculator to the desired method of calculation
  * @param {String} statusCalcRequest - String used to determine the StatusRequest object containing the method of calculating the status
  * @param {Function} callback - Callback function
  */
@@ -545,7 +544,7 @@ function closeThread(threadObject, callback)
 }
 
 /**
- * Close the thread
+ * Unfreezes a thread that has been frozen
  * @param {object} threadObject - A thread to unfreeze
  * @param {Function} callback - Callback function
  */
@@ -574,8 +573,8 @@ function createThreadSummary(threadObject, callback)
 }
 
 /**
- * Create summary of the thread
- * @param {object} threadObject - A thread to create a summary from
+ * Closes the children threads of the referenced thread
+ * @param {object} threadObject - A thread whose children are to be closed
  * @param {Function} callback - Callback function
  */
 function closeThreadChildren(threadObject, callback)
@@ -606,12 +605,12 @@ function setThreadLevels(threadObject, callback)
 }
 
 /**
- * Set levels of a thread
- * @param {object} threadObject - A thread to move thread
+ * Moves a thread
+ * @param {object} threadObject - Thread to be moved
  * @param {object} newParent - New thread to set as parent
  * @param {Function} callback - Callback function
  */
-function moveThread(threadObject, newParant, callback)
+function moveThread(threadObject, newParent, callback)
 {
 	var result = threadObject.moveThread(newParent);
 	
@@ -632,12 +631,12 @@ function moveThread(threadObject, newParant, callback)
 /**
  * Query a thread
  * @param {object} threadObject - A thread to move thread
- * @param startDateTime - Starting time of thread. Default is the time stamp of the root.
- * @param endDateTime - Ending time of the thread.
- * @param maxLevel - The maximum level of depth to be returned.
- * @param minLevel - The minimum level of depth to be returned.
- * @param userGroup - The usergroup to restrict results to.
- * @param phraseSet - Set of strings to restrict posts with only those strings. All posts returned if empty.
+ * @param {Date} startDateTime - Starting time of thread. Default is the time stamp of the root.
+ * @param {Date} endDateTime - Ending time of the thread.
+ * @param {number} maxLevel - The maximum level of depth to be returned.
+ * @param {number} minLevel - The minimum level of depth to be returned.
+ * @param {number} userGroup - The usergroup to restrict results to.
+ * @param {number} phraseSet - Set of strings to restrict posts with only those strings. All posts returned if empty.
  * @param {Function} callback - Callback function
  */
 function queryThread(threadObject, startDate, endDate, minLevel, maxLevel, userGroup, phraseSet, callback)
@@ -667,8 +666,8 @@ function hideThread(threadObject, callback)
 }
 
 /**
- * Show a hidden thread
- * @param {object} threadObject - A hidden thread to show
+ * Unhides a hidden thread
+ * @param {object} threadObject - A hidden thread to unhide
  * @param {Function} callback - Callback function
  */
 function showThread(threadObject, callback)
@@ -703,8 +702,8 @@ function markPostInThreadAsRead(threadObject, callback)
 /**
  * Function to set a post as read
  * @param {object} threadObject - A hidden thread to show
- * @param {} userID - 
- * @param {} postID -
+ * @param {number} userID - User of to be marked as read
+ * @param {number} postID - ID of post to be marked
  * @param {Function} callback - Callback function
  * @throws Throw exception if callback function does not exist
  */
@@ -723,7 +722,12 @@ function readPost(threadObject, userID, postID, callback)
 		throw callbackNotDefined;
 	}
 } 
-
+/**
+ * Count descendants of a thread
+ * @param {object} threadObject - Thread whose descendants are to be counted
+ * @param {Function} callback - Callback function
+ * @throws Throw exception if callback function does not exist
+ */
 function countDescendants(threadObject, callback)
 {
 	var result = threadObject.countDescendants();
@@ -739,7 +743,13 @@ function countDescendants(threadObject, callback)
 		throw callbackNotDefined;
 	}
 }
-
+/**
+ * Function to set a post as read
+ * @param {object} threadObject - Reference for calling
+ * @param {object} threadToCountChildren - Count children from of this thread
+ * @param {Function} callback - Callback function
+ * @throws Throw exception if callback function does not exist
+ */
 function countChildren(threadObject, threadToCountChildren, callback)
 {
 	var result = threadObject.countChildren(threadToCountChildren);
@@ -753,7 +763,12 @@ function countChildren(threadObject, threadToCountChildren, callback)
 		throw callbackNotDefined;
 	}
 }
-
+/**
+ * Opens a closed thread
+ * @param {object} threadObject - Closed thread to open
+ * @param {Function} callback - Callback function
+ * @throws Throw exception if callback function does not exist
+ */
 function reopenThread(threadObject, callback)
 {
 	threadObject.reopenThread();
@@ -765,7 +780,13 @@ function reopenThread(threadObject, callback)
 		callback();
 	}
 }
-
+/**
+ * Generate an array of threads that is related to the specified thread
+ * @param {object} threadObject - Reference for calling thread
+ * @param {object} validThread - Threads to be generated from this thread
+ * @param {Function} callback - Callback function
+ * @throws Throw exception if callback function does not exist
+ */
 function generateThreads(threadObject, validThread, callback)
 {
 	var result = threadObject.generateThreads(validThread);
