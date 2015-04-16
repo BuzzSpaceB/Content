@@ -233,7 +233,7 @@ function uploadResources(resource, description, callback)
 	}
 	catch(err)
 	{
-		console.log(err);
+		throw err;
 	}
 	
 	if(result == true)
