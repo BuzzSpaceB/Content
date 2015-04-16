@@ -25,7 +25,7 @@ ds.init(mongoose);
  */
 
 /**
- * Create an report by getting the thread stats.
+ * Create a report by getting the thread stats.
  * @param {Function} callback - Callback function
  * @returns {object}
  */
@@ -383,7 +383,7 @@ function addAppraisalToPost(postID, appraisalName, callback)
 /**
  * Save the appraisal icons
  * @param {File} file - the file to be uploaded as from the HTML file elementFromPoint
- * @parm {String} description - Description of the icon to be uploaded, used by the resources' upload function
+ * @param {String} description - Description of the icon to be uploaded, used by the resources' upload function
  * @param {Function} callback - Callback function
  */
 function saveIcon(file, description, callback)
@@ -393,8 +393,8 @@ function saveIcon(file, description, callback)
 
 /**
  * Returns the status of the user, who's userID is entered as parameter, to the callback function specified
- * @parm {String} userId - userID of the user who's status is to be returned
- * @parm {Function} callback - callback function to be used once user has been found
+ * @param {String} userId - userID of the user who's status is to be returned
+ * @param {Function} callback - callback function to be used once user has been found
  */
 function getStatus(userId, callback)
 {
@@ -464,7 +464,7 @@ function updateAllProfiles(callback)
 
 /**
  * Updates specified user's profile status value according to a specific criteria depending on what status calculator is active
- * @parm {String} user - userID of the user who's status is to be updated
+ * @param {String} user - userID of the user who's status is to be updated
  * @param {Function} callback - Callback function
  */
 function updateProfile(user, callback)
@@ -684,7 +684,7 @@ function showThread(threadObject, callback)
 }
 
 /**
- * Show a hidden thread
+ * Mark a post as read for user
  * @param {object} threadObject - A thread to mark post as read
  * @param {Function} callback - Callback function
  */
@@ -701,7 +701,7 @@ function markPostInThreadAsRead(threadObject, callback)
 }
 
 /**
- * Show a hidden thread
+ * Function to set a post as read
  * @param {object} threadObject - A hidden thread to show
  * @param {} userID - 
  * @param {} postID -
