@@ -1,5 +1,14 @@
 var content = require('../index.js');
 
+/**
+ * The reason for using this dummy data is when the get thread stats is called upon a specific thread, then the paramaters
+ * that needs to be passed to query thread, is spesific to that specific thread, now when high level will integrate this part
+ * all the treads will be in a layerd system with threads upon threads, and so forth thus they will most probabally have a current thread
+ * object from which the information of that thread that needs to passed into the query thread paramaters, so it will be specific to the current
+ * thread i each case, therefore high level integration will be integrating this part of threads and Reporting since they will then have
+ * the efficiant information to actually call querry Thread.
+ * @returns {*}
+ */
 function dummyQueryThread(){
 
     var postList = [
@@ -30,7 +39,8 @@ exports.TestGetThreadStats_Num = function(test){
     var result;
     var posts;
 
-   posts = dummyQueryThread();
+   // posts = content.queryThread();
+    posts = dummyQueryThread();
 
     content.getThreadStats(posts, "Num", function(res)
     {
