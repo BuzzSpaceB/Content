@@ -24,8 +24,7 @@ exports.testResourceUpload = function(test)
 				fileUploadSuccessful = res;
 			});
 			
-			exampleResourceID = fileUploadSuccessful._id;
-			//test.ok(fileUploadSuccessful, "Upload unsuccessful");
+			test.equals(fileUploadSuccessful, null);
 		}
 	});
 	
@@ -62,50 +61,6 @@ exports.testAddingResourceType = function(test)
 	test.done();
 }
 
-exports.testRemovalResource = function(test)
-{
-	var successfulRemoval;
-
-	if(typeof exampleResourceID != 'undefined')
-	{
-		content.removeResource(exampleResourceID, function(res)
-		{
-			successfulRemoval = res;
-		});
-	}
-	else
-	{
-		successfulRemoval = false;
-	}
-	
-	test.ok(successfulRemoval, "Unable to remove resource");
-	
-	test.done();
-}
-
-
-exports.testGettingResource = function(test)
-{
-	var acquiredResource;
-	
-	content.getResource("Timetable.pdf", function(res) {
-		acquiredResource = res;
-	});
-	
-	test.ok(acquiredResource, "Resource could not be aquired");
-	
-	test.throws(
-		function ()
-		{ 
-			content.getResource("Timetable.pdf");
-		},
-		Error,
-		"Show fail for excluding a callback function");
-	
-	
-	test.done();
-}
-
 exports.testModifyingResourceType = function(test)
 {
 	var successfulModification;
@@ -130,6 +85,64 @@ exports.removeResourceType = function(test)
 	});
 	
 	test.ok(successfulRemoval, "Could not remove resource type");
+	
+	test.done();
+}
+
+exports.testRemovalResource = function(test)
+{
+	var successfulRemoval;
+	var data;
+	
+	content.removeResource("Timetable.pdf", function(res)
+	{
+		data = res;
+	});
+	
+	if(data)
+	{
+		successfulRemoval = true;
+	}
+	else
+	{
+		successfulRemoval = false;
+	}
+	
+	
+	test.ok(successfulRemoval, "Unable to remove resource");
+	
+	test.done();
+}
+
+
+exports.testGettingResource = function(test)
+{
+	var acquiredResource;
+	var testOK = false;
+	
+	content.getResource("Timetable.pdf", function(res) {
+		acquiredResource = res;
+	});
+	
+	if(acquiredResource)
+	{
+		testOK = true;
+	}
+	else
+	{
+		testOK = false;
+	}
+	
+	test.ok(testOK, "Resource could not be aquired");
+	
+	test.throws(
+		function ()
+		{ 
+			content.getResource("Timetable.pdf");
+		},
+		Error,
+		"Show fail for excluding a callback function");
+	
 	
 	test.done();
 }
