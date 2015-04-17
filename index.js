@@ -100,7 +100,7 @@ function getThreadStats(posts, action, callback)
 {
 	var result;
 	
-	Reporting.getThreadStats(posts, action, function(res)
+	reporting.getThreadStats(posts, action, function(res)
 	{
 		result = res;
 	});
@@ -135,7 +135,7 @@ function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKey
 {
     var result;
 
-    result = Reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, function(res)
+    result = reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, function(res)
     {
         result = res;
     });
@@ -167,7 +167,7 @@ function exportThreadAppraisal(threadObject, dir, callback)
     * else the user needs to promted for the directory and this needs to be passed as a paramater.
     **/
     var fileName = "ThreadAppraisals.csv";
-	Reporting.exportThreadAppraisal(threadObject, dir, fileName);
+	reporting.exportThreadAppraisal(threadObject, dir, fileName);
 
 	console.log("Content: Reporting -- exporting thread appraisal.");
 
@@ -199,7 +199,7 @@ function importThreadAppraisal(dir, filename)
  */
 function exportThread(threadObject, dir, filename, callback)
 {
-	Reporting.exportThread(threadObject, dir, filename);
+	reporting.exportThread(threadObject, dir, filename);
 	
 	console.log("Content: Reporting -- exporting thread.");
 	
