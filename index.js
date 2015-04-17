@@ -271,12 +271,12 @@ function uploadResources(resource, description, callback)
 
 /**
  * Remove a resource to the database
- * @param {string} url - url of the resource to remove
+ * @param {string} id - id of the resource to remove
  * @param {Function} callback - Callback funcion
  */
 function removeResources(url, callback)
 {
-	var result = resources.removeResource(url);
+	var result = resources.removeResource(id);
 	
 	if(result)
 	{
@@ -304,13 +304,25 @@ function removeResources(url, callback)
  */
 function getResource(resourceName, callback)
 {
-	resources.downloadResource(resourceName);
+	var result = null; 
+	//result = resources.downloadResource(resourceName);
   
-	console.log("Content: Resource "  + resourceName + " retrieved");
+    if(result)
+    {
+		console.log("Content: Resource "  + resourceName + " retrieved");
+	}
+	else
+	{
+		console.log("Content: Resource "  + resourceName + " could not be retrieved");
+	}
   
 	if(typeof callback !== 'undefined')
 	{
-		callback();
+		callback(result);
+	}
+	else
+	{
+		throw callbackNotDefined;
 	}
 }
 
