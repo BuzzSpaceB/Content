@@ -25,7 +25,8 @@ var callbackNotDefined = "Content Exception: Callback function was not defined."
  */
 
 /**
- * Create a report by getting the thread stats.
+ * Create a report by getting the thread stats, This can be used with js Report creating a graph as an example
+ * in jsReport_Examples/getThreadStatistics.html
  * @param {Function} callback - Callback function
  * @returns {object}
  * @throw callbackNotDefined
@@ -36,6 +37,11 @@ function createReport(callback)
     var memCount;
     var maxDepth;
     var avgDepth;
+    var posts;
+    Threads.queryThread(0,0,0,0,0,0, function(res)
+    {
+        posts = res;
+    });
     
     try
     {
@@ -82,9 +88,10 @@ function createReport(callback)
 }
 
 /**
- * Gets a thread's statistics
- * @param {object} posts - Posts in a thread
- * @param {string} action - The statistic to get
+ * Gets a thread's statistics - it is used to provide a versatile way to
+ * get statistical information of subsets of posts complying with specified restrictions.
+ * @param {object} posts - Posts in a thread - (returned by Threads.queryThread
+ * @param {string} action - The statistic to get (done by specified action keyword)
  * @param {Function} callback - Callback function
  * @returns {number}
  * @throw callbackNotDefined
@@ -93,7 +100,7 @@ function getThreadStats(posts, action, callback)
 {
 	var result;
 	
-	reporting.getThreadStats(posts, action, function(res)
+	Reporting.getThreadStats(posts, action, function(res)
 	{
 		result = res;
 	});
@@ -111,105 +118,112 @@ function getThreadStats(posts, action, callback)
 }
 
 /**
- * Gets a thread's appraisal
- * @param {} setOfPosts - A set of posts to get the appraisal
+ * Gets a thread's appraisal - The functionality provided by this function is to provide a versitile way to get detailed
+ * statistical information of subsets of posts complying with specified restictions and their assosiated appriasals assigned by specified
+ * members
+ * @param {} setOfPosts - A set of posts returned by Threads.queryThreads
  * @param {} setOfMembers -
  * @param {} setOfAppraisals - 
- * @param {} actionKeyword - 
+ * @param {} actionKeyword - All- detailed set with all posts details.
+ *                         - Sum - the sum of all appraisal values for the entries in the dataset that was created.
+ *                         - Avg - The Average of all appraisal values for the entries in the dataset.
+ *                         - Max - The Maximum of all appraisal values for the entries in the dataset.
+ *                         - Min - the minimum of all non-empty appraisal vales for the entries that was created in the dataset.
  * @param {Function} callback - Callback function
  */
 function getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback)
 {
-	reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, callback);
-	
-	console.log("Content: Reporting -- Getting thread appraisal.");
+    var result;
+
+    result = Reporting.getThreadAppraisal(setOfPosts, setOfMembers, setOfAppraisals, actionKeyword, function(res)
+    {
+        result = res;
+    });
+
+	console.log("Content: Reporting -- Getting thread appraisal(s).");
+
+    if(typeof callback !== 'undefined')
+    {
+        callback(result);
+    }
+    else
+    {
+        throw callbackNotDefined;
+    }
 }
 
 /**
- * Export a thread's appraisal
- * @param {Object} threadObject - A thread
+ * Export a thread's appraisal - The functionality of this function is to provide an offline facility to apply a manual
+ * appraisal It creates a datase to be used to edit of line, and allows updates to be inserted to importThreadAppraisals
+ * @param {Object} threadObject - A thread - retrned by Threads.queryThread
  * @param {string} dir - Directory to export to
- * @param {string} filename - the name of the file
  * @param {Function} callback - Callback function
  */
-function exportThreadAppraisal(threadObject, dir, filename, callback)
+function exportThreadAppraisal(threadObject, dir, callback)
 {
-	reporting.exportThreadAppraisal(threadObject, dir, filename);
-	
+    /* decided that the name the file will be saved as needs to stay consistent,
+    *Inportant that the directory to be saved to needs to be asked from the user sice differant OS users
+    * will have differant directories of choice. This needs to be done via a UI, js Report also provides such a facility,
+    * else the user needs to promted for the directory and this needs to be passed as a paramater.
+    **/
+    var fileName = "ThreadAppraisals.csv";
+	Reporting.exportThreadAppraisal(threadObject, dir, fileName);
+
 	console.log("Content: Reporting -- exporting thread appraisal.");
-	
-	if(typeof callback !== 'undefined')
-	{
-		callback();
-	}
+
+	//This function does not use a callback function it simply just saves a csv file in specified directory and then it is done
 }
 
 /**
- * Import a thread's appraisal
- * @param {string} dir - Directory to export to
- * @param {string} filename - the name of the file
+ * Import a thread's appraisal - The functionality of this function is to provide an offline facility to apply manual
+ * appraisal, it is dependant on exportThreadAppraisal
+ * @param {string} dir - Directory from where the imported csv file was stored -  user might have moved file thus user needs to be prompted again for the directory
+ * @param {string} filename - the name of the existing csv file that the user wants to import back.
  * @param {Function} callback - Callback function
  */
-function importThreadAppraisal(dir, filename, callback)
+function importThreadAppraisal(dir, filename)
 {
 	reporting.importThreadAppraisal(dir, filename);
 	
 	console.log("Content: Reporting -- importing thread appraisal.");
 	
-	if(typeof callback !== 'undefined')
-	{
-		callback();
-	}
+	// Once again this function does not need a callback function since it does not return a result but it only imports a file.
 }
 
 /**
- * Export a thread
- * @param {Object} threadObject - A thread
+ * Export a thread -  this function is to provide a means to backup content of a thread in a serialized text file.
+ * @param {Object} threadObject - A thread returned bt Threads.queryThread
  * @param {string} dir - Directory to export to
  * @param {string} filename - the name of the file
  * @param {Function} callback - Callback function
  */
 function exportThread(threadObject, dir, filename, callback)
 {
-	reporting.exportThread(threadObject, dir, filename);
+	Reporting.exportThread(threadObject, dir, filename);
 	
 	console.log("Content: Reporting -- exporting thread.");
 	
-	if(typeof callback !== 'undefined')
-	{
-		callback();
-	}
+	// Once again this file does not have a callback function since it does not return a result but simply creates a text
+    // file containing a backup of a thread object
 }
 
 /**
- * Import a thread
- * @param {string} dir - Directory to export to
- * @param {string} filename - the name of the file
- * @param {Function} callback - Callback function
+ * Import a thread - This function is used to restore  the content of a thread or a subset of a thread that was
+ * stores using exportThread
+ * @param {string} dir - Directory to import the text file from
+ * @param {string} filename - the name of the  existing file
  * @throw callbackNotDefined
  */
-function importThread(dir, filename, callback)
+function importThread(dir, filename)
 {
-	var result;
-	
-	reporting.importThread(dir, filename, function(res)
-	{
-		result = res;
-	});
+
+	reporting.importThread(dir, filename);
 	
 	console.log("Content: Reporting -- importing thread appraisal.");
-	
-	if(typeof callback !== 'undefined')
-	{
-		callback(result);
-	}
-	else
-	{
-		throw callbackNotDefined;
-	}
+
+    // Once again this function does not need a callback function since it does not return a result but it only imports a file.
+
 }
-
-
 
 /*
  * 
