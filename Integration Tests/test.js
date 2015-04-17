@@ -62,20 +62,6 @@ exports.testNewPost = function(test){
 	test.done();
 }
 
-// exports.testCloseThread = function(test){
-// 	console.log("Running test for submitting a new post");
-// 	test.expect(1);
-// 	var obj;
-// 	content.createNewThread("Frikkie3","This is the test of adding a post to a thread","This is the content of the original","Question", function(res){
-// 		obj = res;
-// 	});
-// 	content.closeThread(obj,function(){});
-// 	content.showThread(obj,function(){});
-
-
-
-// }
-
 exports.testGetHeading = function(test){
 	console.log("Running test for getting a heading");
 	test.expect(1);
@@ -99,15 +85,38 @@ exports.testGetContent = function(test){
 	test.expect(1);
 
 	var obj;
-	content.createNewThread("Frikkie3","This is the test of adding a post to a thread","This is the content of the original","Question", function(res){
+	content.createNewThread("Frikkie3","This is the test of getting thread content","This is the content","Question", function(res){
 		obj = res;
 	});
 
-	var head;
-
-	content.getHeadingFromThread(obj,function(res){
+	content.getContentFromThread(obj,function(res){
 		head = res;
 	})
-	test.equal(head,"This is the test of creating a thread2");
+	test.equal(head,"This is the content");
 	test.done();	
+}
+
+
+
+exports.testDateRetrieval = function(test){
+	console.log("Running test for date retrieval");
+	test.expect(5);
+	var date = new Date();
+
+	var obj;
+	content.createNewThread("Frikkie3","This is the test of getting thread content","This is the content","Question", function(res){
+		obj = res;
+	});
+	
+	var retrievedDate;
+	content.getDateTimeFromThread(obj,function(res){
+		retrievedDate = res;
+	});
+
+	test.equal(date.getYear(),retrievedDate.getYear());
+	test.equal(date.getMonth(),retrievedDate.getMonth());
+	test.equal(date.getDay(),retrievedDate.getDay());
+	test.equal(date.getHours(),retrievedDate.getHours());
+	test.equal(date.getMinutes(),retrievedDate.getMinutes());
+	test.done();
 }
