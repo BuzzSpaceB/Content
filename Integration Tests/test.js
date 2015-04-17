@@ -81,6 +81,24 @@ exports.testGetHeading = function(test){
 	test.expect(1);
 
 	var obj;
+	content.createNewThread("Frikkie3","This is the test of getting a heading","This is some thread's content","Question", function(res){
+		obj = res;
+	});
+
+	var head;
+
+	content.getHeadingFromThread(obj,function(res){
+		head = res;
+	})
+	test.equal(head,"This is the test of getting a heading");
+	test.done();
+}
+
+exports.testGetContent = function(test){
+	console.log("Running test for getting content");
+	test.expect(1);
+
+	var obj;
 	content.createNewThread("Frikkie3","This is the test of adding a post to a thread","This is the content of the original","Question", function(res){
 		obj = res;
 	});
@@ -91,5 +109,5 @@ exports.testGetHeading = function(test){
 		head = res;
 	})
 	test.equal(head,"This is the test of creating a thread2");
-	test.done();
+	test.done();	
 }
