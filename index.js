@@ -274,7 +274,7 @@ function uploadResources(resource, description, callback)
  * @param {string} id - id of the resource to remove
  * @param {Function} callback - Callback funcion
  */
-function removeResources(url, callback)
+function removeResources(id, callback)
 {
 	var result = resources.removeResource(id);
 	
