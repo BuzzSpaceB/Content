@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <style>
+        .toolbar {
+            padding: 20px;
+        }
+
+        body {
+            padding: 20px;
+        }
+
+        .btn {
+            background-color: #0078e7;
+            color: white;
+            border: 0 none rgba(0, 0, 0, 0);
+            border-radius: 2px;
+            padding: 5px;
+        }
+        @media print
+        {
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body style="height:100%">
+<div class="no-print">
+    <input class='btn' type='button' value='print' id='printCommand'/>
+</div>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<script>
+
+
+    $(function () {
+
+        $("#printCommand").click(function() {
+            $("#container").find(".highcharts-button").hide();
+            var printTemplate = {
+                content: $("#container").html(),
+                recipe: "phantom-pdf",
+                phantom: {
+                    printDelay: 1000
+                }
+            };
+            jsreport.render(printTemplate);
+            $("#container").find(".highcharts-button").show();
+
+        });
+
+
+       // var data =  {{:~toJSON(data)}};
+
+    function toJSON(data) {
+        return JSON.stringify(data);
+    }
+
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Thread Statistics'
+        },
+        xAxis: {
+            type: 'category'
+        },
+
+        legend: {
+            enabled: false
+        },
+
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: [{
+            name: 'Thread statistics',
+            colorByPoint: true,
+            data: [{
+                name: 'Entries',
+                y: 5
+            }, {
+                name: 'Member Count',
+                y: 2
+            }, {
+                name: 'Maximum Depth',
+                y: 4
+            }, {
+                name: 'Average Depth',
+                y: 4
+            }]
+        }]
+    });
+    });
+</script>
+</body>
+</html>
+
+
