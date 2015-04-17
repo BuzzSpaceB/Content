@@ -94,7 +94,7 @@ exports.testRemovalResource = function(test)
 	var successfulRemoval;
 	var data;
 	
-	content.removeResource("Timetable.pdf", function(res)
+	content.removeResources("Timetable.pdf", function(res)
 	{
 		data = res;
 	});
@@ -124,16 +124,7 @@ exports.testGettingResource = function(test)
 		acquiredResource = res;
 	});
 	
-	if(acquiredResource)
-	{
-		testOK = true;
-	}
-	else
-	{
-		testOK = false;
-	}
-	
-	test.ok(testOK, "Resource could not be aquired");
+	test.ok(acquiredResource, "Resource could not be aquired");
 	
 	test.throws(
 		function ()
